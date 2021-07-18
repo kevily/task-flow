@@ -4,6 +4,12 @@ import path from 'path'
 import ts from 'gulp-typescript'
 import babel from 'gulp-babel'
 import terser from 'gulp-terser'
+import postcss from 'gulp-postcss'
+import sass from 'gulp-sass'
+// @ts-ignore
+import less from 'gulp-less'
+// @ts-ignore
+import cssnano from 'cssnano'
 
 export interface paramsType {
     root?: string
@@ -32,26 +38,49 @@ class Task {
             cwd: path.join(this.root, 'src')
         }
     }
+    createTask(src: any) {
+        return gulp.src(src, this.srcDefaultOps)
+    }
+    taskEnd(task: any) {
+        return task.pipe(gulp.dest(this.output))
+    }
     ts() {
         const tsProject = ts.createProject(path.join(this.root, 'tsconfig.json'))
-        const tsTask = gulp.src(this.scriptSrc, this.srcDefaultOps).pipe(tsProject())
-        tsTask.js.pipe(gulp.dest(this.output))
-        return tsTask.dts.pipe(gulp.dest(this.output))
+        const tsTask = this.createTask(this.scriptSrc).pipe(tsProject())
+        tsTask.js.pipe(terser()).pipe(gulp.dest(this.output))
+        return this.taskEnd(tsTask.dts)
     }
     babel() {
-        let task = gulp.src(this.scriptSrc, this.srcDefaultOps)
+        let task = this.createTask(this.scriptSrc)
         task = task.pipe(
             babel({
                 presets: ['@babel/preset-typescript', '@babel/preset-env'],
                 plugins: ['@babel/plugin-transform-runtime']
             })
         )
-        return task.pipe(gulp.dest(this.output))
+        return this.taskEnd(task.pipe(terser()))
+    }
+    postcss() {
+        const plugins = [cssnano()]
+        // sass,scss
+        // ----------------------------------------------------------------------
+        let sassTask = this.createTask(['**/*.sass', '**/*.scss'])
+            .pipe(sass(require('sass'))())
+            .pipe(postcss(plugins))
+        this.taskEnd(sassTask)
+        // less
+        // ----------------------------------------------------------------------
+        let lessTask = this.createTask(['**/*.less']).pipe(less()).pipe(postcss(plugins))
+        this.taskEnd(lessTask)
+        // css,pcss
+        // ----------------------------------------------------------------------
+        let postcssTask = this.createTask(['**/*.pcss', '**/*.css']).pipe(postcss(plugins))
+        return this.taskEnd(postcssTask)
     }
     copy(ext: string[]) {
         const files = ext.map(s => `**/*.${s}`)
-        return gulp.src(files, this.srcDefaultOps).pipe(gulp.dest(this.output))
+        return this.taskEnd(this.createTask(files))
     }
 }
 
-export default Task
+export { Task }
