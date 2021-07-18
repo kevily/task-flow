@@ -22,7 +22,6 @@
         "@babel/plugin-transform-runtime": "^7.14.5",
         "@babel/preset-env": "^7.14.7",
         "@babel/preset-typescript": "^7.14.5",
-        "@types/gulp": "^4.0.9",
         "gulp": "^4.0.2",
         "gulp-babel": "^8.0.0",
         "gulp-terser": "^2.0.1",
@@ -30,6 +29,7 @@
         "rimraf": "^3.0.2"
     },
     "devDependencies": {
+        "@types/gulp": "^4.0.9",
         "@types/gulp-babel": "^6.1.30",
         "@types/gulp-terser": "^1.2.1",
         "@types/node": "^16.3.3",
