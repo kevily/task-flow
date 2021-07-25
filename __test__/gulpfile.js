@@ -7,9 +7,13 @@ const esmTask = new GulpTask({
         dir: 'dist/esm'
     },
     taskConfig: {
-        openSourcemap: true,
+        ts: {
+            useBabel: false,
+            openSourcemap: true
+        },
         babel: {
-            format: 'esm'
+            format: 'esm',
+            openSourcemap: true
         }
     }
 })
@@ -21,9 +25,9 @@ const defaultTask = new GulpTask({
         dir: 'dist/lib'
     },
     taskConfig: {
-        openSourcemap: true,
         ts: {
-            useBabel: true
+            useBabel: true,
+            openSourcemap: true
         }
     }
 })

@@ -1,3 +1,40 @@
+export interface createTaskOptionsType {
+    src: string | string[]
+    openSourcemap?: boolean
+}
+export interface closeTaskOptinosType {
+    task: any
+    openSourcemap?: createTaskOptionsType['openSourcemap']
+}
+
+// task
+// ----------------------------------------------------------------------
+export interface tsConfigType {
+    configPath?: string
+    useBabel?: boolean
+    openSourcemap?: createTaskOptionsType['openSourcemap']
+    openCompress?: boolean
+}
+export interface babelConfigType {
+    task?: any
+    format?: 'esm' | 'auto'
+    openSourcemap?: createTaskOptionsType['openSourcemap']
+    openCompress?: boolean
+}
+export interface imageSpritesOptionsType {
+    task?: any
+    /**
+     * @description unit -> KB，if set to 0, there is no limit。
+     * @default 10
+     */
+    sizeLimit?: number
+    imgName?: string
+    cssName?: string
+}
+export interface imageminOptionsType {
+    task?: any
+}
+
 export interface optionsType {
     root?: string
     inputConfig?: {
@@ -9,23 +46,8 @@ export interface optionsType {
         dir?: string
     }
     taskConfig?: {
-        openSourcemap?: boolean
-        openCompress?: boolean
-        babel?: {
-            format?: 'esm' | 'auto'
-        }
-        ts?: {
-            useBabel?: boolean
-        }
+        ts?: tsConfigType
+        babel?: babelConfigType
+        imageSprites?: imageSpritesOptionsType
     }
-}
-
-export interface createTaskOptionsType {
-    src: string | string[]
-}
-export interface closeTaskOptinosType {
-    task: any
-}
-export interface babelOptionsType {
-    task?: any
 }

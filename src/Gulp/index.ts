@@ -1,14 +1,27 @@
 import gulp from 'gulp'
 import path from 'path'
+import { removeSync } from 'fs-extra'
+import {
+    optionsType,
+    createTaskOptionsType,
+    closeTaskOptinosType,
+    babelConfigType,
+    imageminOptionsType,
+    tsConfigType,
+    imageSpritesOptionsType
+} from './types'
+import _ from 'lodash'
+// plugins
+// ----------------------------------------------------------------------
 import ts from 'gulp-typescript'
 import babel from 'gulp-babel'
 import terser from 'gulp-terser'
 import postcss from 'gulp-postcss'
 import sourcemaps from 'gulp-sourcemaps'
 import cssnano from 'cssnano'
-import { removeSync } from 'fs-extra'
-import { optionsType, createTaskOptionsType, closeTaskOptinosType, babelOptionsType } from './types'
-import _ from 'lodash'
+import spritesmith from 'gulp.spritesmith'
+import filterFile from 'gulp-filter'
+import imagemin from 'gulp-imagemin'
 
 const scriptSrc = ['ts', 'js', 'tsx', 'jsx', 'mjs'].map(s => `**/*.${s}`)
 
@@ -31,10 +44,18 @@ export class GulpTask {
         }
         this.taskConfig = {
             babel: {
+                format: 'auto',
                 ...options?.taskConfig?.babel
             },
             ts: {
+                configPath: path.join(this.root, 'tsconfig.json'),
                 ...options?.taskConfig?.ts
+            },
+            imageSprites: {
+                sizeLimit: 10,
+                imgName: 'sprite.png',
+                cssName: 'sprite.css',
+                ...options?.taskConfig?.imageSprites
             }
         }
 
@@ -48,22 +69,20 @@ export class GulpTask {
     // tasks
     // ----------------------------------------------------------------------
     createTask(options: createTaskOptionsType) {
-        const { openSourcemap } = this.taskConfig
         const { ignore, dir } = this.inputConfig
         let task = gulp.src(options.src, {
             ignore,
             cwd: path.join(this.root, dir)
         })
-        if (openSourcemap) {
+        if (options.openSourcemap) {
             task = task.pipe(sourcemaps.init())
         }
         return task
     }
     outputTask(options: closeTaskOptinosType) {
-        const { openSourcemap } = this.taskConfig
         const { dir } = this.outputConfig
         let task = options.task
-        if (openSourcemap) {
+        if (options.openSourcemap) {
             task = task.pipe(sourcemaps.write('.', { sourceRoot: './', includeContent: false }))
         }
         return task.pipe(gulp.dest(path.join(this.root, dir)))
@@ -72,25 +91,24 @@ export class GulpTask {
         const { dir } = this.outputConfig
         return await removeSync(path.join(this.root, dir))
     }
-    ts() {
-        const { useBabel } = this.taskConfig.ts
-        const { openCompress } = this.taskConfig
-        const tsProject = ts.createProject(path.join(this.root, 'tsconfig.json'))
-        const task: any = this.createTask({ src: scriptSrc }).pipe(tsProject())
+    ts(c?: tsConfigType) {
+        const config = _.assign(this.taskConfig.ts, c)
+        const task: any = this.createTask({ src: scriptSrc }).pipe(
+            ts.createProject(config.configPath)()
+        )
         this.outputTask({ task: task.dts })
         let jsTask = task.js
-        if (useBabel) {
+        if (config.useBabel) {
             return this.babel({ task: jsTask })
         }
-        if (openCompress) {
+        if (config.openCompress) {
             jsTask = jsTask.pipe(terser())
         }
         return this.outputTask({ task: jsTask })
     }
-    babel(options: babelOptionsType) {
-        const { format } = this.taskConfig.babel
-        const { openCompress } = this.taskConfig
-        let task = options.task || this.createTask({ src: scriptSrc })
+    babel(c: babelConfigType) {
+        const config = _.assign(this.taskConfig.babel, c)
+        let task = config.task || this.createTask({ src: scriptSrc })
         task = task.pipe(
             babel({
                 presets: [
@@ -99,14 +117,14 @@ export class GulpTask {
                     [
                         '@babel/preset-env',
                         {
-                            modules: format === 'esm' ? false : 'auto'
+                            modules: config.format === 'esm' ? false : 'auto'
                         }
                     ]
                 ],
                 plugins: ['@babel/plugin-transform-runtime']
             })
         )
-        if (openCompress) {
+        if (config.openCompress) {
             task = task.pipe(terser())
         }
         return this.outputTask({ task })
@@ -129,6 +147,22 @@ export class GulpTask {
         // ----------------------------------------------------------------------
         let postcssTask = this.createTask({ src: ['**/*.pcss', '**/*.css'] }).pipe(postcss(plugins))
         return this.outputTask({ task: postcssTask })
+    }
+    imageSprites(c?: imageSpritesOptionsType) {
+        const config = _.assign(this.taskConfig.imageSprites, c)
+        let task = this.createTask({ src: '**/*.png' })
+        if (config.sizeLimit) {
+            task = task.pipe(filterFile(file => file.stat.size <= config.sizeLimit * 1024))
+        }
+        return this.outputTask({
+            task: task.pipe(spritesmith({ imgName: config.imgName, cssName: config.cssName }))
+        })
+    }
+    imagemin(options?: imageminOptionsType) {
+        let task = options?.task || this.createTask({ src: '**/*.{png,svg,jpeg,gif}' })
+        return this.outputTask({
+            task: task.pipe(imagemin())
+        })
     }
     copy(ext: string[]) {
         return this.outputTask({ task: this.createTask({ src: ext.map(s => `**/*.${s}`) }) })
