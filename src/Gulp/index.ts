@@ -1,14 +1,7 @@
 import gulp from 'gulp'
 import path from 'path'
 import { removeSync } from 'fs-extra'
-import {
-    optionsType,
-    createTaskOptionsType,
-    closeTaskOptinosType,
-    babelConfigType,
-    tsConfigType,
-    imageSpritesOptionsType
-} from './types'
+import { optionsType, createTaskOptionsType, closeTaskOptinosType } from './types'
 import _ from 'lodash'
 // plugins
 // ----------------------------------------------------------------------
@@ -47,6 +40,8 @@ export class GulpTask {
             },
             ts: {
                 configPath: path.join(this.root, 'tsconfig.json'),
+                genDts: true,
+                genJs: true,
                 ...options?.taskConfig?.ts
             },
             imageSprites: {
@@ -54,10 +49,22 @@ export class GulpTask {
                 imgName: 'sprite.png',
                 cssName: 'sprite.css',
                 ...options?.taskConfig?.imageSprites
+            },
+            copy: {
+                files: [],
+                ...options.taskConfig.copy
             }
         }
 
         this.addInputIgnore(['**/node_modules/**/*.*', '**/__tests__/**/*.*'])
+        // bind
+        // ----------------------------------------------------------------------
+        this.clear = this.clear.bind(this)
+        this.ts = this.ts.bind(this)
+        this.babel = this.babel.bind(this)
+        this.css = this.css.bind(this)
+        this.imageSprites = this.imageSprites.bind(this)
+        this.copy = this.copy.bind(this)
     }
     addInputIgnore(igore: string[]) {
         _.forEach(igore, str => {
@@ -89,24 +96,26 @@ export class GulpTask {
         const { dir } = this.outputConfig
         return await removeSync(path.join(this.root, dir))
     }
-    ts(c?: tsConfigType) {
-        const config = _.assign(this.taskConfig.ts, c)
-        const task: any = this.createTask({ src: scriptSrc }).pipe(
-            ts.createProject(config.configPath)()
+    ts(cb) {
+        const { configPath, openCompress, openSourcemap, genJs, genDts } = this.taskConfig.ts
+        const task: any = this.createTask({ src: scriptSrc, openSourcemap }).pipe(
+            ts.createProject(configPath)()
         )
-        this.outputTask({ task: task.dts })
-        let jsTask = task.js
-        if (config.useBabel) {
-            return this.babel({ task: jsTask })
+        if (genDts) {
+            this.outputTask({ task: task.dts })
         }
-        if (config.openCompress) {
-            jsTask = jsTask.pipe(terser())
+        if (genJs) {
+            let jsTask = task.js
+            if (openCompress) {
+                jsTask = jsTask.pipe(terser())
+            }
+            this.outputTask({ task: jsTask, openSourcemap })
         }
-        return this.outputTask({ task: jsTask })
+        _.isFunction(cb) && cb()
     }
-    babel(c: babelConfigType) {
-        const config = _.assign(this.taskConfig.babel, c)
-        let task = config.task || this.createTask({ src: scriptSrc })
+    babel() {
+        const { format, openCompress, openSourcemap } = this.taskConfig.babel
+        let task = this.createTask({ src: scriptSrc, openSourcemap })
         task = task.pipe(
             babel({
                 presets: [
@@ -115,17 +124,17 @@ export class GulpTask {
                     [
                         '@babel/preset-env',
                         {
-                            modules: config.format === 'esm' ? false : 'auto'
+                            modules: format === 'esm' ? false : 'auto'
                         }
                     ]
                 ],
                 plugins: ['@babel/plugin-transform-runtime']
             })
         )
-        if (config.openCompress) {
+        if (openCompress) {
             task = task.pipe(terser())
         }
-        return this.outputTask({ task })
+        return this.outputTask({ task, openSourcemap })
     }
     css() {
         const plugins = [cssnano()]
@@ -146,17 +155,18 @@ export class GulpTask {
         let postcssTask = this.createTask({ src: ['**/*.pcss', '**/*.css'] }).pipe(postcss(plugins))
         return this.outputTask({ task: postcssTask })
     }
-    imageSprites(c?: imageSpritesOptionsType) {
-        const config = _.assign(this.taskConfig.imageSprites, c)
+    imageSprites() {
+        const { sizeLimit, imgName, cssName } = this.taskConfig.imageSprites
         let task = this.createTask({ src: '**/*.png' })
-        if (config.sizeLimit) {
-            task = task.pipe(filterFile(file => file.stat.size <= config.sizeLimit * 1024))
+        if (sizeLimit) {
+            task = task.pipe(filterFile(file => file.stat.size <= sizeLimit * 1024))
         }
         return this.outputTask({
-            task: task.pipe(spritesmith({ imgName: config.imgName, cssName: config.cssName }))
+            task: task.pipe(spritesmith({ imgName, cssName }))
         })
     }
-    copy(ext: string[]) {
-        return this.outputTask({ task: this.createTask({ src: ext.map(s => `**/*.${s}`) }) })
+    copy() {
+        const { files } = this.taskConfig.copy
+        return this.outputTask({ task: this.createTask({ src: files }) })
     }
 }

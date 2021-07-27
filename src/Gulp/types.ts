@@ -9,28 +9,6 @@ export interface closeTaskOptinosType {
 
 // task
 // ----------------------------------------------------------------------
-export interface tsConfigType {
-    configPath?: string
-    useBabel?: boolean
-    openSourcemap?: createTaskOptionsType['openSourcemap']
-    openCompress?: boolean
-}
-export interface babelConfigType {
-    task?: any
-    format?: 'esm' | 'auto'
-    openSourcemap?: createTaskOptionsType['openSourcemap']
-    openCompress?: boolean
-}
-export interface imageSpritesOptionsType {
-    task?: any
-    /**
-     * @description unit -> KB，if set to 0, there is no limit。
-     * @default 10
-     */
-    sizeLimit?: number
-    imgName?: string
-    cssName?: string
-}
 
 export interface optionsType {
     root?: string
@@ -43,8 +21,29 @@ export interface optionsType {
         dir?: string
     }
     taskConfig?: {
-        ts?: tsConfigType
-        babel?: babelConfigType
-        imageSprites?: imageSpritesOptionsType
+        ts?: {
+            configPath?: string
+            genDts?: boolean
+            genJs?: boolean
+            openSourcemap?: createTaskOptionsType['openSourcemap']
+            openCompress?: boolean
+        }
+        babel?: {
+            format?: 'esm' | 'auto'
+            openSourcemap?: createTaskOptionsType['openSourcemap']
+            openCompress?: boolean
+        }
+        imageSprites?: {
+            /**
+             * @description unit -> KB，if set to 0, there is no limit。
+             * @default 10
+             */
+            sizeLimit?: number
+            imgName?: string
+            cssName?: string
+        }
+        copy?: {
+            files?: string[]
+        }
     }
 }

@@ -2,18 +2,22 @@ const path = require('path')
 const { GulpTask } = require('../lib')
 const gulp = require('gulp')
 
+const copyFiles = ['**/*.jpg', '**/*.jpeg', '**/*.gif', '**/*.png']
+
 const esmTask = new GulpTask({
     outputConfig: {
         dir: 'dist/esm'
     },
     taskConfig: {
         ts: {
-            useBabel: false,
             openSourcemap: true
         },
         babel: {
             format: 'esm',
             openSourcemap: true
+        },
+        copy: {
+            files: copyFiles
         }
     }
 })
@@ -28,28 +32,16 @@ const defaultTask = new GulpTask({
         ts: {
             useBabel: true,
             openSourcemap: true
+        },
+        copy: {
+            files: copyFiles
         }
     }
 })
 defaultTask.addInputIgnore(['**/demo/**/*.*'])
 
 function runTask(task) {
-    return gulp.series(
-        function clear() {
-            return task.clear()
-        },
-        gulp.parallel(
-            function ts() {
-                return task.ts()
-            },
-            function css() {
-                return task.css()
-            },
-            function copy() {
-                return task.copy(['jpg', 'jpeg', 'gif', 'png'])
-            }
-        )
-    )
+    return gulp.series(task.clear, gulp.parallel(task.ts, task.css, task.copy))
 }
 
 exports.default = gulp.parallel(runTask(esmTask), runTask(defaultTask))
