@@ -11,7 +11,8 @@
         "test-gulp": "cd ./__test__ && rimraf ./dist && gulp",
         "login": "npm login --registry http://registry.npmjs.org",
         "pub": "npm run build && npm publish --registry http://registry.npmjs.org",
-        "commit": "git add . && cz",
+        "lint": "eslint \"./src/**/*.{ts,js}\"",
+        "commit": "yarn lint && git add . && cz",
         "push": "yarn commit && git push"
     },
     "files": [
@@ -66,10 +67,11 @@
         "@types/lodash": "^4.14.171",
         "@types/node": "^16.3.3",
         "@types/sass": "^1.16.1",
-        "@typescript-eslint/eslint-plugin": "^3.9.1",
-        "@typescript-eslint/parser": "^3.9.1",
+        "@typescript-eslint/eslint-plugin": "^4.28.5",
+        "@typescript-eslint/parser": "^4.28.5",
         "commitizen": "^4.2.4",
         "cz-conventional-changelog": "^3.3.0",
+        "eslint": "^7.31.0",
         "prettier": "^2.3.2",
         "typescript": "^4.3.5"
     }

@@ -140,19 +140,21 @@ export class GulpTask {
         const plugins = [cssnano()]
         // sass
         // ----------------------------------------------------------------------
-        let sassTask = this.createTask({ src: ['**/*.sass', '**/*.scss'] }).pipe(
+        const sassTask = this.createTask({ src: ['**/*.sass', '**/*.scss'] }).pipe(
             postcss(plugins, { parser: require('postcss-scss') })
         )
         this.outputTask({ task: sassTask })
         // less
         // ----------------------------------------------------------------------
-        let lessTask = this.createTask({ src: ['**/*.less'] }).pipe(
+        const lessTask = this.createTask({ src: ['**/*.less'] }).pipe(
             postcss(plugins, { parser: require('postcss-less') })
         )
         this.outputTask({ task: lessTask })
         // postcss
         // ----------------------------------------------------------------------
-        let postcssTask = this.createTask({ src: ['**/*.pcss', '**/*.css'] }).pipe(postcss(plugins))
+        const postcssTask = this.createTask({ src: ['**/*.pcss', '**/*.css'] }).pipe(
+            postcss(plugins)
+        )
         return this.outputTask({ task: postcssTask })
     }
     imageSprites() {
