@@ -6,7 +6,6 @@ import {
     createTaskOptionsType,
     closeTaskOptinosType,
     babelConfigType,
-    imageminOptionsType,
     tsConfigType,
     imageSpritesOptionsType
 } from './types'
@@ -21,7 +20,6 @@ import sourcemaps from 'gulp-sourcemaps'
 import cssnano from 'cssnano'
 import spritesmith from 'gulp.spritesmith'
 import filterFile from 'gulp-filter'
-import imagemin from 'gulp-imagemin'
 
 const scriptSrc = ['ts', 'js', 'tsx', 'jsx', 'mjs'].map(s => `**/*.${s}`)
 
@@ -68,21 +66,21 @@ export class GulpTask {
     }
     // tasks
     // ----------------------------------------------------------------------
-    createTask(options: createTaskOptionsType) {
+    createTask(c: createTaskOptionsType) {
         const { ignore, dir } = this.inputConfig
-        let task = gulp.src(options.src, {
+        let task = gulp.src(c.src, {
             ignore,
             cwd: path.join(this.root, dir)
         })
-        if (options.openSourcemap) {
+        if (c.openSourcemap) {
             task = task.pipe(sourcemaps.init())
         }
         return task
     }
-    outputTask(options: closeTaskOptinosType) {
+    outputTask(c: closeTaskOptinosType) {
         const { dir } = this.outputConfig
-        let task = options.task
-        if (options.openSourcemap) {
+        let task = c.task
+        if (c.openSourcemap) {
             task = task.pipe(sourcemaps.write('.', { sourceRoot: './', includeContent: false }))
         }
         return task.pipe(gulp.dest(path.join(this.root, dir)))
@@ -156,12 +154,6 @@ export class GulpTask {
         }
         return this.outputTask({
             task: task.pipe(spritesmith({ imgName: config.imgName, cssName: config.cssName }))
-        })
-    }
-    imagemin(options?: imageminOptionsType) {
-        let task = options?.task || this.createTask({ src: '**/*.{png,svg,jpeg,gif}' })
-        return this.outputTask({
-            task: task.pipe(imagemin())
         })
     }
     copy(ext: string[]) {

@@ -31,9 +31,6 @@ export interface imageSpritesOptionsType {
     imgName?: string
     cssName?: string
 }
-export interface imageminOptionsType {
-    task?: any
-}
 
 export interface optionsType {
     root?: string

@@ -29,7 +29,7 @@ export interface optionsType {
 
 export class RollupTask {
     public root: optionsType['root']
-    private bundle: RollupBuild
+    public bundle: RollupBuild
     public inputConfig: optionsType['inputConfig']
     public outputConfig: optionsType['outputConfig']
     constructor(options?: optionsType) {
