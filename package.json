@@ -1,5 +1,5 @@
 {
-    "name": "task-flow",
+    "name": "@1k/task-flow",
     "version": "0.0.1",
     "main": "./lib/index.js",
     "types": "./lib/index.d.ts",
