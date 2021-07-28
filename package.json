@@ -12,7 +12,7 @@
     "scripts": {
         "build-bin": "rimraf ./bin && tsc -p ./tsconfig.bin.json",
         "build-task": "rimraf ./lib && tsc -p ./tsconfig.task.json",
-        "build": "yarn build-bin && yarn build-task",
+        "build": "yarn build-task && yarn build-bin",
         "test-gulp": "cd ./__test__ && rimraf ./dist && gulp",
         "login": "npm login --registry http://registry.npmjs.org",
         "pub": "npm run build && npm publish --registry http://registry.npmjs.org",

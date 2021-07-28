@@ -1,3 +1,5 @@
+#!/usr/bin/env node
+
 import { GulpTask } from '../lib'
 import { program } from 'commander'
 import ora from 'ora'
