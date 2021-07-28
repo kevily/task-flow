@@ -52,7 +52,7 @@ export class GulpTask {
             },
             copy: {
                 files: [],
-                ...options.taskConfig.copy
+                ...options?.taskConfig?.copy
             }
         }
 
@@ -96,7 +96,7 @@ export class GulpTask {
         const { dir } = this.outputConfig
         return await removeSync(path.join(this.root, dir))
     }
-    ts(cb) {
+    ts(cb?: () => void) {
         const { configPath, openCompress, openSourcemap, genJs, genDts } = this.taskConfig.ts
         const task: any = this.createTask({ src: scriptSrc, openSourcemap }).pipe(
             ts.createProject(configPath)()

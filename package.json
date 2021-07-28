@@ -6,8 +6,13 @@
     "repository": "https://github.com/kevily/1k-utils",
     "author": "1k <bug_zero@163.com>",
     "license": "MIT",
+    "bin": {
+        "task": "./bin/index.js"
+    },
     "scripts": {
-        "build": "rimraf ./lib && tsc",
+        "build-bin": "rimraf ./bin && tsc -p ./tsconfig.bin.json",
+        "build-task": "rimraf ./lib && tsc -p ./tsconfig.task.json",
+        "build": "yarn build-bin && yarn build-task",
         "test-gulp": "cd ./__test__ && rimraf ./dist && gulp",
         "login": "npm login --registry http://registry.npmjs.org",
         "pub": "npm run build && npm publish --registry http://registry.npmjs.org",
@@ -17,6 +22,7 @@
     },
     "files": [
         "lib",
+        "bin",
         "package.json",
         "yarn.lock"
     ],
