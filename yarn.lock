@@ -2759,24 +2759,20 @@ cwise-compiler@^1.0.0, cwise-compiler@^1.1.2:
   dependencies:
     uniq "^1.0.0"
 
+cz-adapter-eslint@^0.3.0:
+  version "0.3.0"
+  resolved "https://registry.nlark.com/cz-adapter-eslint/download/cz-adapter-eslint-0.3.0.tgz#47887628fd69cc4617af180c7ccef5a9048297f2"
+  integrity sha1-R4h2KP1pzEYXrxgMfM71qQSCl/I=
+  dependencies:
+    lodash.map "^4.6.0"
+    longest "^2.0.1"
+    right-pad "^1.0.1"
+    word-wrap "^1.2.3"
+
 cz-conventional-changelog@3.2.0:
   version "3.2.0"
   resolved "https://registry.npm.taobao.org/cz-conventional-changelog/download/cz-conventional-changelog-3.2.0.tgz#6aef1f892d64113343d7e455529089ac9f20e477"
   integrity sha1-au8fiS1kETND1+RVUpCJrJ8g5Hc=
-  dependencies:
-    chalk "^2.4.1"
-    commitizen "^4.0.3"
-    conventional-commit-types "^3.0.0"
-    lodash.map "^4.5.1"
-    longest "^2.0.1"
-    word-wrap "^1.0.3"
-  optionalDependencies:
-    "@commitlint/load" ">6.1.1"
-
-cz-conventional-changelog@^3.3.0:
-  version "3.3.0"
-  resolved "https://registry.npm.taobao.org/cz-conventional-changelog/download/cz-conventional-changelog-3.3.0.tgz#9246947c90404149b3fe2cf7ee91acad3b7d22d2"
-  integrity sha1-kkaUfJBAQUmz/iz37pGsrTt9ItI=
   dependencies:
     chalk "^2.4.1"
     commitizen "^4.0.3"
@@ -5029,7 +5025,7 @@ lodash.debounce@^4.0.8:
   resolved "https://registry.nlark.com/lodash.debounce/download/lodash.debounce-4.0.8.tgz#82d79bff30a67c4005ffd5e2515300ad9ca4d7af"
   integrity sha1-gteb/zCmfEAF/9XiUVMArZyk168=
 
-lodash.map@^4.5.1:
+lodash.map@^4.5.1, lodash.map@^4.6.0:
   version "4.6.0"
   resolved "https://registry.npm.taobao.org/lodash.map/download/lodash.map-4.6.0.tgz#771ec7839e3473d9c4cde28b19394c3562f4f6d3"
   integrity sha1-dx7Hg540c9nEzeKLGTlMNWL09tM=
@@ -7109,6 +7105,11 @@ rgba-regex@^1.0.0:
   version "1.0.0"
   resolved "https://registry.npm.taobao.org/rgba-regex/download/rgba-regex-1.0.0.tgz#43374e2e2ca0968b0ef1523460b7d730ff22eeb3"
   integrity sha1-QzdOLiyglosO8VI0YLfXMP8i7rM=
+
+right-pad@^1.0.1:
+  version "1.0.1"
+  resolved "https://registry.npm.taobao.org/right-pad/download/right-pad-1.0.1.tgz#8ca08c2cbb5b55e74dafa96bf7fd1a27d568c8d0"
+  integrity sha1-jKCMLLtbVedNr6lr9/0aJ9VoyNA=
 
 rimraf@^3.0.2:
   version "3.0.2"
