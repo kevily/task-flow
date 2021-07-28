@@ -1,4 +1,4 @@
-import { GulpTask } from './tasks'
+import { GulpTask } from '../lib'
 import { program } from 'commander'
 import ora from 'ora'
 import chalk from 'chalk'
