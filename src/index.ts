@@ -33,5 +33,5 @@ if (options.css) {
     runGulpTask('css')
 }
 if (options.createCz) {
-    baseTask.createCz()
+    baseTask.onCreateCz()
 }
