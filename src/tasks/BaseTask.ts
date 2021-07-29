@@ -9,7 +9,7 @@ export interface BaseTaskConfigType {
 export class BaseTask {
     public root: BaseTaskConfigType['root']
     constructor(c?: BaseTaskConfigType) {
-        this.root = c.root || process.cwd()
+        this.root = c?.root || process.cwd()
     }
     onCreateCz(): void {
         const czrcPath = path.join(this.root, '.czrc')
