@@ -1271,7 +1271,7 @@
 
 "@types/fs-extra@^9.0.12":
   version "9.0.12"
-  resolved "https://registry.nlark.com/@types/fs-extra/download/@types/fs-extra-9.0.12.tgz#9b8f27973df8a7a3920e8461517ebf8a7d4fdfaf"
+  resolved "https://registry.nlark.com/@types/fs-extra/download/@types/fs-extra-9.0.12.tgz?cache=0&sync_timestamp=1625605304928&other_urls=https%3A%2F%2Fregistry.nlark.com%2F%40types%2Ffs-extra%2Fdownload%2F%40types%2Ffs-extra-9.0.12.tgz#9b8f27973df8a7a3920e8461517ebf8a7d4fdfaf"
   integrity sha1-m48nlz34p6OSDoRhUX6/in1P368=
   dependencies:
     "@types/node" "*"
