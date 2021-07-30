@@ -29,6 +29,7 @@ gulp.ts()
 - run scripts: task -h
 ```
 Options:
+  --createCz  crate cz config
   --ts        Use tsc to build(js,ts)
   --babel     Use babel to build(js,ts)
   --css       Build css,scss,pcss,less
