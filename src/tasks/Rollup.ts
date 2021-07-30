@@ -1,18 +1,18 @@
-import rollup, { RollupBuild, ExternalOption, ModuleFormat } from 'rollup'
+import { rollup, RollupBuild, ExternalOption, ModuleFormat } from 'rollup'
 import typescript from 'rollup-plugin-typescript2'
 import { nodeResolve } from '@rollup/plugin-node-resolve'
 import styles from 'rollup-plugin-styles'
-import path from 'path'
+import path = require('path')
 import { babel } from '@rollup/plugin-babel'
 import commonjs from '@rollup/plugin-commonjs'
-import url from '@rollup/plugin-url'
+import url = require('@rollup/plugin-url')
 import { terser } from 'rollup-plugin-terser'
 import filesize from 'rollup-plugin-filesize'
 import { DEFAULT_EXTENSIONS } from '@babel/core'
-import fsExtra from 'fs-extra'
-import ora from 'ora'
-import chalk from 'chalk'
-import _ from 'lodash'
+import fsExtra = require('fs-extra')
+import ora = require('ora')
+import chalk = require('chalk')
+import _ = require('lodash')
 
 export interface optionsType {
     root?: string
@@ -46,8 +46,7 @@ export class RollupTask {
             plugins: [
                 styles(),
                 typescript({
-                    tsconfig: path.join(this.root, 'tsconfig.json'),
-                    useTsconfigDeclarationDir: true
+                    tsconfig: path.join(this.root, 'tsconfig.json')
                 }),
                 nodeResolve(),
                 commonjs(),
@@ -73,7 +72,7 @@ export class RollupTask {
 
     async onCreateRollupBuild() {
         const { plugins, external, main } = this.inputConfig
-        this.bundle = await rollup.rollup({
+        this.bundle = await rollup({
             external,
             input: path.join(this.root, main),
             plugins

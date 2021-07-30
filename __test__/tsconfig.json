@@ -10,9 +10,9 @@
     "moduleResolution": "node",
     "sourceMap": false,
     "declaration": true,
-    "outDir": "lib",
+    "outDir": "dist",
     "baseUrl": "."
   },
   "include": ["src/**/*"],
-  "exclude": ["node_modules/**/*", "src/**/types.ts"]
+  "exclude": ["node_modules/**/*", "**/demo/**/*"]
 }

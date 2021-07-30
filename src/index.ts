@@ -2,8 +2,8 @@
 
 import { GulpTask, BaseTask } from '../lib'
 import { program } from 'commander'
-import ora from 'ora'
-import chalk from 'chalk'
+import ora = require('ora')
+import chalk = require('chalk')
 
 const gulpTask = new GulpTask()
 const baseTask = new BaseTask()
