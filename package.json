@@ -12,12 +12,12 @@
     "scripts": {
         "build-bin": "rimraf ./bin && tsc -p ./tsconfig.bin.json",
         "build-task": "rimraf ./lib && tsc -p ./tsconfig.task.json",
-        "build": "yarn build-task && yarn build-bin",
+        "build": "yarn lint && yarn build-task && yarn build-bin",
         "test": "yarn build && cd ./__test__ && yarn upgrade -L && rimraf ./dist && yarn build",
         "login": "npm login --registry http://registry.npmjs.org",
         "pub": "npm run build && npm publish --registry http://registry.npmjs.org",
         "lint": "eslint \"./src/**/*.{ts,js}\"",
-        "commit": "yarn lint && yarn test && git add . && cz",
+        "commit": "yarn test && git add . && cz",
         "push": "yarn commit && git push"
     },
     "files": [
@@ -39,6 +39,7 @@
         "chalk": "^4.1.1",
         "commander": "^8.1.0",
         "cssnano": "^5.0.6",
+        "eslint": "^7.31.0",
         "fs-extra": "^10.0.0",
         "gulp": "^4.0.2",
         "gulp-babel": "^8.0.0",
@@ -55,13 +56,15 @@
         "postcss": "^8.3.5",
         "postcss-less": "^4.0.1",
         "postcss-scss": "^4.0.0",
+        "prettier": "^2.3.2",
         "rimraf": "^3.0.2",
         "rollup": "^2.53.3",
         "rollup-plugin-filesize": "^9.1.1",
         "rollup-plugin-styles": "^3.14.1",
         "rollup-plugin-terser": "^7.0.2",
         "rollup-plugin-typescript2": "^0.30.0",
-        "sass": "^1.35.2"
+        "sass": "^1.35.2",
+        "typescript": "^4.3.5"
     },
     "devDependencies": {
         "@types/babel-core": "^6.25.7",
@@ -76,9 +79,6 @@
         "@typescript-eslint/eslint-plugin": "^4.28.5",
         "@typescript-eslint/parser": "^4.28.5",
         "commitizen": "^4.2.4",
-        "cz-adapter-eslint": "^0.3.0",
-        "eslint": "^7.31.0",
-        "prettier": "^2.3.2",
-        "typescript": "^4.3.5"
+        "cz-adapter-eslint": "^0.3.0"
     }
 }
