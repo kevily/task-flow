@@ -66,14 +66,14 @@ export class GulpTask {
         this.imageSprites = this.imageSprites.bind(this)
         this.copy = this.copy.bind(this)
     }
-    addInputIgnore(igore: string[]) {
+    public addInputIgnore(igore: string[]): void {
         _.forEach(igore, str => {
             this.inputConfig.ignore.push(path.join(this.root, str))
         })
     }
     // tasks
     // ----------------------------------------------------------------------
-    createTask(c: createTaskOptionsType) {
+    createTask(c: createTaskOptionsType): NodeJS.ReadWriteStream {
         const { ignore, dir } = this.inputConfig
         let task = gulp.src(c.src, {
             ignore,
@@ -84,7 +84,7 @@ export class GulpTask {
         }
         return task
     }
-    outputTask(c: closeTaskOptinosType) {
+    outputTask(c: closeTaskOptinosType): NodeJS.ReadWriteStream {
         const { dir } = this.outputConfig
         let task = c.task
         if (c.openSourcemap) {
@@ -92,11 +92,11 @@ export class GulpTask {
         }
         return task.pipe(gulp.dest(path.join(this.root, dir)))
     }
-    async clear() {
+    async clear(): Promise<any> {
         const { dir } = this.outputConfig
         return await removeSync(path.join(this.root, dir))
     }
-    ts(cb?: () => void) {
+    ts(cb?: () => void): void {
         const { configPath, openCompress, openSourcemap, genJs, genDts } = this.taskConfig.ts
         const task: any = this.createTask({ src: scriptSrc, openSourcemap }).pipe(
             ts.createProject(configPath)()
@@ -113,30 +113,33 @@ export class GulpTask {
         }
         _.isFunction(cb) && cb()
     }
-    babel() {
-        const { format, openCompress, openSourcemap } = this.taskConfig.babel
+    babel(): NodeJS.ReadWriteStream {
+        const { format, openCompress, openSourcemap, config } = this.taskConfig.babel
+
         let task = this.createTask({ src: scriptSrc, openSourcemap })
         task = task.pipe(
-            babel({
-                presets: [
-                    '@babel/preset-typescript',
-                    '@babel/preset-react',
-                    [
-                        '@babel/preset-env',
-                        {
-                            modules: format === 'esm' ? false : 'auto'
-                        }
-                    ]
-                ],
-                plugins: ['@babel/plugin-transform-runtime']
-            })
+            babel(
+                config || {
+                    presets: [
+                        require.resolve('@babel/preset-typescript'),
+                        require.resolve('@babel/preset-react'),
+                        [
+                            require.resolve('@babel/preset-env'),
+                            {
+                                modules: format === 'esm' ? false : 'auto'
+                            }
+                        ]
+                    ],
+                    plugins: [require.resolve('@babel/plugin-transform-runtime')]
+                }
+            )
         )
         if (openCompress) {
             task = task.pipe(terser())
         }
         return this.outputTask({ task, openSourcemap })
     }
-    css() {
+    css(): NodeJS.ReadWriteStream {
         const plugins = [cssnano()]
         // sass
         // ----------------------------------------------------------------------
@@ -157,7 +160,7 @@ export class GulpTask {
         )
         return this.outputTask({ task: postcssTask })
     }
-    imageSprites() {
+    imageSprites(): NodeJS.ReadWriteStream {
         const { sizeLimit, imgName, cssName } = this.taskConfig.imageSprites
         let task = this.createTask({ src: '**/*.png' })
         if (sizeLimit) {
@@ -167,7 +170,7 @@ export class GulpTask {
             task: task.pipe(spritesmith({ imgName, cssName }))
         })
     }
-    copy() {
+    copy(): NodeJS.ReadWriteStream {
         const { files } = this.taskConfig.copy
         return this.outputTask({ task: this.createTask({ src: files }) })
     }

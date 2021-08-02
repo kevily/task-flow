@@ -30,6 +30,10 @@ export interface optionsType {
         }
         babel?: {
             format?: 'esm' | 'auto'
+            config?: {
+                presets?: any[]
+                plugins?: any[]
+            }
             openSourcemap?: createTaskOptionsType['openSourcemap']
             openCompress?: boolean
         }

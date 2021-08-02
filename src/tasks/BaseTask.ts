@@ -11,11 +11,14 @@ export class BaseTask {
     constructor(c?: BaseTaskConfigType) {
         this.root = c?.root || process.cwd()
     }
-    onCreateCz(): void {
+    private spawnSync(command: string, args?: ReadonlyArray<string>): void {
+        spawnSync(command, args, { cwd: this.root })
+    }
+    public onCreateCz(): void {
         const czrcPath = path.join(this.root, '.czrc')
         fsExtra.writeJsonSync(czrcPath, {
             path: 'cz-adapter-eslint'
         })
-        spawnSync(onGenCommand(), ['add', 'commitizen', 'cz-adapter-eslint', '-D'])
+        this.spawnSync(onGenCommand(), ['add', 'commitizen', 'cz-adapter-eslint', '-D'])
     }
 }

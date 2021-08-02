@@ -10,7 +10,9 @@
         "task": "./bin/index.js"
     },
     "scripts": {
+        "start-bin": "tsc -p ./tsconfig.bin.json -w",
         "build-bin": "rimraf ./bin && tsc -p ./tsconfig.bin.json",
+        "start-task": "tsc -p ./tsconfig.task.json -w",
         "build-task": "rimraf ./lib && tsc -p ./tsconfig.task.json",
         "build": "yarn lint && yarn build-task && yarn build-bin",
         "test": "yarn build && cd ./__test__ && yarn upgrade -L && rimraf ./dist && yarn build",
