@@ -25,8 +25,8 @@ export function genBabelConfig(
         c.plugins = config.plugins
         c.presets = config.presets
     } else {
-        c.presets = c.presets.concat(config.presets)
-        c.plugins = c.plugins.concat(config.plugins)
+        c.presets = c.presets.concat(config.presets || [])
+        c.plugins = c.plugins.concat(config.plugins || [])
     }
     return c
 }
