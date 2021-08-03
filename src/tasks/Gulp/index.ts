@@ -37,10 +37,6 @@ export class GulpTask {
         this.taskConfig = {
             babel: {
                 format: 'auto',
-                config: {
-                    overwrite: true,
-                    ...options?.taskConfig?.babel?.config
-                },
                 ..._.omit(options?.taskConfig?.babel, ['config'])
             },
             ts: {

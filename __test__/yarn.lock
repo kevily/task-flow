@@ -3,7 +3,7 @@
 
 
 "1k-tasks@../":
-  version "0.0.12"
+  version "0.0.13"
   dependencies:
     "@babel/core" "^7.14.6"
     "@babel/plugin-transform-runtime" "^7.14.5"
@@ -2108,9 +2108,9 @@ color@^3.0.0:
     color-string "^1.6.0"
 
 colord@^2.0.1:
-  version "2.5.0"
-  resolved "https://registry.nlark.com/colord/download/colord-2.5.0.tgz?cache=0&sync_timestamp=1627928662977&other_urls=https%3A%2F%2Fregistry.nlark.com%2Fcolord%2Fdownload%2Fcolord-2.5.0.tgz#1813c5e46e81052475d0542150b78b3be6a259ff"
-  integrity sha1-GBPF5G6BBSR10FQhULeLO+aiWf8=
+  version "2.6.0"
+  resolved "https://registry.nlark.com/colord/download/colord-2.6.0.tgz?cache=0&sync_timestamp=1628001517565&other_urls=https%3A%2F%2Fregistry.nlark.com%2Fcolord%2Fdownload%2Fcolord-2.6.0.tgz#6cd716e1270cfff8d6f66e751768749650e209cd"
+  integrity sha1-bNcW4ScM//jW9m51F2h0llDiCc0=
 
 colorette@^1.2.2:
   version "1.2.2"

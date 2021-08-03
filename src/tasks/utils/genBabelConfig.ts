@@ -6,7 +6,7 @@ export interface babelConfigType {
 export type babelFormatType = 'esm' | 'auto'
 export function genBabelConfig(
     format: babelFormatType,
-    config: babelConfigType
+    config?: babelConfigType
 ): Omit<babelConfigType, 'overwrite'> {
     const c = {
         presets: [
@@ -21,12 +21,12 @@ export function genBabelConfig(
         ],
         plugins: [require.resolve('@babel/plugin-transform-runtime')]
     }
-    if (config.overwrite) {
+    if (config?.overwrite) {
         c.plugins = config.plugins
         c.presets = config.presets
     } else {
-        c.presets = c.presets.concat(config.presets || [])
-        c.plugins = c.plugins.concat(config.plugins || [])
+        c.presets = c.presets.concat(config?.presets || [])
+        c.plugins = c.plugins.concat(config?.plugins || [])
     }
     return c
 }
