@@ -1,3 +1,4 @@
+import { babelConfigType, babelFormatType } from '../utils/genBabelConfig'
 export interface createTaskOptionsType {
     src: string | string[]
     openSourcemap?: boolean
@@ -29,11 +30,8 @@ export interface optionsType {
             openCompress?: boolean
         }
         babel?: {
-            format?: 'esm' | 'auto'
-            config?: {
-                presets?: any[]
-                plugins?: any[]
-            }
+            format?: babelFormatType
+            config?: babelConfigType
             openSourcemap?: createTaskOptionsType['openSourcemap']
             openCompress?: boolean
         }

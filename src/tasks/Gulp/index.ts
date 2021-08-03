@@ -2,6 +2,7 @@ import gulp from 'gulp'
 import path from 'path'
 import { removeSync } from 'fs-extra'
 import { optionsType, createTaskOptionsType, closeTaskOptinosType } from './types'
+import { genBabelConfig } from '../utils/genBabelConfig'
 import _ from 'lodash'
 // plugins
 // ----------------------------------------------------------------------
@@ -36,7 +37,11 @@ export class GulpTask {
         this.taskConfig = {
             babel: {
                 format: 'auto',
-                ...options?.taskConfig?.babel
+                config: {
+                    overwrite: true,
+                    ...options?.taskConfig?.babel?.config
+                },
+                ..._.omit(options?.taskConfig?.babel, ['config'])
             },
             ts: {
                 configPath: path.join(this.root, 'tsconfig.json'),
@@ -115,25 +120,8 @@ export class GulpTask {
     }
     babel(): NodeJS.ReadWriteStream {
         const { format, openCompress, openSourcemap, config } = this.taskConfig.babel
-
         let task = this.createTask({ src: scriptSrc, openSourcemap })
-        task = task.pipe(
-            babel(
-                config || {
-                    presets: [
-                        require.resolve('@babel/preset-typescript'),
-                        require.resolve('@babel/preset-react'),
-                        [
-                            require.resolve('@babel/preset-env'),
-                            {
-                                modules: format === 'esm' ? false : 'auto'
-                            }
-                        ]
-                    ],
-                    plugins: [require.resolve('@babel/plugin-transform-runtime')]
-                }
-            )
-        )
+        task = task.pipe(babel(genBabelConfig(format, config)))
         if (openCompress) {
             task = task.pipe(terser())
         }
