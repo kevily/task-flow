@@ -2,7 +2,7 @@ import gulp from 'gulp'
 import path from 'path'
 import { removeSync } from 'fs-extra'
 import { optionsType, createTaskOptionsType, closeTaskOptinosType } from './types'
-import { genBabelConfig } from '../utils/genBabelConfig'
+import { createTaskConfig, taskConfigType } from '../utils/createTaskConfig'
 import _ from 'lodash'
 // plugins
 // ----------------------------------------------------------------------
@@ -21,7 +21,7 @@ export class GulpTask {
     public root: optionsType['root']
     public inputConfig: optionsType['inputConfig']
     public outputConfig: optionsType['outputConfig']
-    public taskConfig: optionsType['taskConfig']
+    public taskConfig: taskConfigType
     constructor(options?: optionsType) {
         this.root = options?.root || process.cwd()
         this.inputConfig = {
@@ -34,29 +34,7 @@ export class GulpTask {
             dir: 'dist',
             ...options?.outputConfig
         }
-        this.taskConfig = {
-            babel: {
-                format: 'auto',
-                ...options?.taskConfig?.babel
-            },
-            ts: {
-                configPath: path.join(this.root, 'tsconfig.json'),
-                genDts: true,
-                genJs: true,
-                ...options?.taskConfig?.ts
-            },
-            imageSprites: {
-                sizeLimit: 10,
-                imgName: 'sprite.png',
-                cssName: 'sprite.css',
-                ...options?.taskConfig?.imageSprites
-            },
-            copy: {
-                files: [],
-                ...options?.taskConfig?.copy
-            }
-        }
-
+        this.taskConfig = createTaskConfig(options?.taskConfig)
         this.addInputIgnore(['**/node_modules/**/*.*', '**/__tests__/**/*.*'])
         // bind
         // ----------------------------------------------------------------------
@@ -115,9 +93,9 @@ export class GulpTask {
         _.isFunction(cb) && cb()
     }
     babel(): NodeJS.ReadWriteStream {
-        const { format, openCompress, openSourcemap, config } = this.taskConfig.babel
+        const { openCompress, openSourcemap, plugins, presets } = this.taskConfig.babel
         let task = this.createTask({ src: scriptSrc, openSourcemap })
-        task = task.pipe(babel(genBabelConfig(format, config)))
+        task = task.pipe(babel({ presets, plugins }))
         if (openCompress) {
             task = task.pipe(terser())
         }

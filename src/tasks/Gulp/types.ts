@@ -1,4 +1,4 @@
-import { babelConfigType, babelFormatType } from '../utils/genBabelConfig'
+import { createTaskConfig } from '../utils/createTaskConfig'
 export interface createTaskOptionsType {
     src: string | string[]
     openSourcemap?: boolean
@@ -21,31 +21,5 @@ export interface optionsType {
     outputConfig?: {
         dir?: string
     }
-    taskConfig?: {
-        ts?: {
-            configPath?: string
-            genDts?: boolean
-            genJs?: boolean
-            openSourcemap?: createTaskOptionsType['openSourcemap']
-            openCompress?: boolean
-        }
-        babel?: {
-            format?: babelFormatType
-            config?: babelConfigType
-            openSourcemap?: createTaskOptionsType['openSourcemap']
-            openCompress?: boolean
-        }
-        imageSprites?: {
-            /**
-             * @description unit -> KB，if set to 0, there is no limit。
-             * @default 10
-             */
-            sizeLimit?: number
-            imgName?: string
-            cssName?: string
-        }
-        copy?: {
-            files?: string[]
-        }
-    }
+    taskConfig?: Parameters<typeof createTaskConfig>[0]
 }
