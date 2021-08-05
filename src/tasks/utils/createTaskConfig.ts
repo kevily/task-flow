@@ -45,7 +45,7 @@ export function createDefaultTaskConfig(): taskConfigType {
             plugins: [require.resolve('@babel/plugin-transform-runtime')]
         },
         ts: {
-            configPath: path.join(process.cwd(), 'tsconfig.json'),
+            configPath: '',
             genDts: true,
             genJs: true
         },

@@ -78,7 +78,7 @@ export class GulpTask {
     ts(cb?: () => void): void {
         const { configPath, openCompress, openSourcemap, genJs, genDts } = this.taskConfig.ts
         const task: any = this.createTask({ src: scriptSrc, openSourcemap }).pipe(
-            ts.createProject(configPath)()
+            ts.createProject(configPath || path.join(this.root, 'tsconfig.json'))()
         )
         if (genDts) {
             this.outputTask({ task: task.dts })
