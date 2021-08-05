@@ -1,6 +1,6 @@
 {
     "name": "1k-tasks",
-    "version": "0.1.1",
+    "version": "0.1.2",
     "main": "./lib/index.js",
     "types": "./lib/index.d.ts",
     "repository": "https://github.com/kevily/task-flow",
