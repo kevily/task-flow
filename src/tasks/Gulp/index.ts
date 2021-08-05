@@ -37,7 +37,7 @@ export class GulpTask {
         this.taskConfig = {
             babel: {
                 format: 'auto',
-                ..._.omit(options?.taskConfig?.babel, ['config'])
+                ...options?.taskConfig?.babel
             },
             ts: {
                 configPath: path.join(this.root, 'tsconfig.json'),
