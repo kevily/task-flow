@@ -15,7 +15,7 @@
         "start-task": "tsc -p ./tsconfig.task.json -w",
         "build-task": "rimraf ./lib && tsc -p ./tsconfig.task.json",
         "build": "yarn lint && yarn build-task && yarn build-bin",
-        "test": "jest --forceExit --coverage --verbose",
+        "test": "yarn build && jest --forceExit --coverage --verbose",
         "login": "npm login --registry http://registry.npmjs.org",
         "pub": "npm publish --registry http://registry.npmjs.org",
         "lint": "eslint \"./src/**/*.{ts,js}\"",
