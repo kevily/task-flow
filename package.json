@@ -1,6 +1,6 @@
 {
     "name": "1k-tasks",
-    "version": "0.1.2",
+    "version": "1.0.0",
     "main": "./lib/index.js",
     "types": "./lib/index.d.ts",
     "repository": "https://github.com/kevily/task-flow",
@@ -15,12 +15,12 @@
         "start-task": "tsc -p ./tsconfig.task.json -w",
         "build-task": "rimraf ./lib && tsc -p ./tsconfig.task.json",
         "build": "yarn lint && yarn build-task && yarn build-bin",
-        "test": "yarn build && jest --forceExit --coverage --verbose",
+        "test": "yarn build && cd ./__test__ && yarn i-task && yarn start",
         "login": "npm login --registry http://registry.npmjs.org",
-        "pub": "npm publish --registry http://registry.npmjs.org",
+        "pub": "yarn push && npm publish --registry http://registry.npmjs.org",
         "lint": "eslint \"./src/**/*.{ts,js}\"",
-        "commit": "yarn test && git add . && cz",
-        "push": "yarn commit && git push"
+        "commit": "git add . && cz",
+        "push": "yarn test && yarn commit && git push"
     },
     "files": [
         "lib",
@@ -47,6 +47,7 @@
         "gulp-babel": "^8.0.0",
         "gulp-filter": "^7.0.0",
         "gulp-postcss": "^9.0.0",
+        "gulp-rename": "^2.0.0",
         "gulp-sourcemaps": "^3.0.0",
         "gulp-terser": "^2.0.1",
         "gulp-typescript": "^6.0.0-alpha.1",
@@ -73,6 +74,7 @@
         "@types/fs-extra": "^9.0.12",
         "@types/gulp": "^4.0.9",
         "@types/gulp-postcss": "^8.0.1",
+        "@types/gulp-rename": "^2.0.1",
         "@types/gulp-sass": "^5.0.0",
         "@types/gulp-terser": "^1.2.1",
         "@types/jest": "^26.0.24",

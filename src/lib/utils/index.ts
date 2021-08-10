@@ -1,4 +1,5 @@
 import cp from 'child_process'
+import * as path from 'path'
 
 export function onGenCommand(): 'yarn' | 'npm' {
     try {
@@ -7,4 +8,8 @@ export function onGenCommand(): 'yarn' | 'npm' {
     } catch {
         return 'npm'
     }
+}
+
+export function mergePath(root: string, p: string): string {
+    return path.join(root, p || '')
 }
