@@ -1,9 +1,10 @@
 import path from 'path'
-import { forEach, map, isArray, assign, filter } from 'lodash'
+import { forEach, map, isArray, assign, filter, isFunction } from 'lodash'
 import { TaskFunctionBase, TaskFunctionParams } from 'Undertaker'
 import * as gulp from 'gulp'
 import ora from 'ora'
 import chalk from 'chalk'
+import { callbackify } from 'util'
 
 export interface configType {
     root?: string
@@ -19,6 +20,12 @@ export interface TaskConfigType<T, C> {
     name: string
     task: T
     config?: C
+}
+export interface runConfigType {
+    sync?: boolean
+    queue?: string[]
+    tip?: string
+    callback: () => void
 }
 
 export default class Task {
@@ -51,7 +58,7 @@ export default class Task {
     public getTaskNames() {
         return Array.from(this.tasks.keys())
     }
-    public async run(c?: { sync?: boolean; queue?: string[]; tip?: string }): Promise<any> {
+    public async run(c?: runConfigType): Promise<any> {
         const running = ora(chalk.yellow(c?.tip || 'Task running...\n')).start()
         const taskNames = isArray(c?.queue)
             ? filter(c?.queue, name => this.tasks.has(name))
@@ -61,6 +68,9 @@ export default class Task {
             return async () => await task(config)
         })
         async function cb() {
+            if (isFunction(c?.callback)) {
+                c.callback()
+            }
             running.succeed()
         }
 

@@ -1,8 +1,11 @@
-const { Engine, ts, css, clear, copy, rollup } = require('1k-tasks')
+const { Engine, ts, css, babel, clear, copy, rollup } = require('1k-tasks')
 const task = new Engine()
 task.addInputIgnore(['**/ignore/**.*'])
 
-task.registry('ts', ts)
+task.registry('ts', ts, {
+    genJs: false
+})
+task.registry('babel', babel)
 task.registry('css', css)
 task.registry('clear', clear)
 task.registry('copy', copy, {
@@ -15,7 +18,7 @@ task.registry('rollup', rollup, {
 
 task.run({
     sync: true,
-    queue: ['clear', 'ts', 'css', 'copy'],
+    queue: ['clear', 'ts', 'babel', 'css', 'copy'],
     tip: 'build: default...\n'
 })
 task.run({ sync: true, queue: ['rollup'], tip: 'build: rollup...\n' })

@@ -39,11 +39,11 @@ export default function (c?: babelTaskConfigType): NodeJS.ReadWriteStream {
                         modules: c?.format === 'esm' ? false : 'auto'
                     }
                 ],
-                ...c?.extraPresets
+                ...(c?.extraPresets || [])
             ],
             plugins: c?.plugins || [
                 require.resolve('@babel/plugin-transform-runtime'),
-                ...c?.extraPlugins
+                ...(c?.extraPlugins || [])
             ]
         })
     )
