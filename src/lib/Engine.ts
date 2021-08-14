@@ -4,7 +4,6 @@ import { TaskFunctionBase, TaskFunctionParams } from 'Undertaker'
 import * as gulp from 'gulp'
 import ora from 'ora'
 import chalk from 'chalk'
-import { callbackify } from 'util'
 
 export interface configType {
     root?: string
@@ -25,7 +24,7 @@ export interface runConfigType {
     sync?: boolean
     queue?: string[]
     tip?: string
-    callback: () => void
+    callback?: () => Promise<any>
 }
 
 export default class Task {
@@ -69,7 +68,7 @@ export default class Task {
         })
         async function cb() {
             if (isFunction(c?.callback)) {
-                c.callback()
+                await c.callback()
             }
             running.succeed()
         }
