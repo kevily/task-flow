@@ -1,6 +1,6 @@
 {
     "name": "1k-tasks",
-    "version": "1.0.5",
+    "version": "1.0.6",
     "main": "./lib/index.js",
     "types": "./lib/index.d.ts",
     "repository": "https://github.com/kevily/task-flow",
@@ -62,7 +62,6 @@
         "prettier": "^2.3.2",
         "rimraf": "^3.0.2",
         "rollup": "^2.53.3",
-        "rollup-plugin-filesize": "^9.1.1",
         "rollup-plugin-styles": "^3.14.1",
         "rollup-plugin-terser": "^7.0.2",
         "rollup-plugin-typescript2": "^0.30.0",
