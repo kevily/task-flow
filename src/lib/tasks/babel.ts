@@ -19,7 +19,7 @@ export interface babelTaskConfigType extends configType {
 }
 
 export const scriptSrc = ['ts', 'js', 'tsx', 'jsx', 'mjs'].map(s => `**/*.${s}`)
-export default function (c?: babelTaskConfigType): NodeJS.ReadWriteStream {
+export default async function (c?: babelTaskConfigType): Promise<any> {
     const root = c?.root || process.cwd()
     const dest = mergePath(root, c?.outputDir)
     let task = createTask({
@@ -50,5 +50,5 @@ export default function (c?: babelTaskConfigType): NodeJS.ReadWriteStream {
     if (c?.openCompress) {
         task = task.pipe(terser())
     }
-    return outputTask({ task, openSourcemap: c?.openSourcemap, dest: dest })
+    await outputTask({ task, openSourcemap: c?.openSourcemap, dest: dest })
 }

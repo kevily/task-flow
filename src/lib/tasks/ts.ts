@@ -25,13 +25,13 @@ export default async function (c?: tsTaskConfigType): Promise<any> {
         ignore: c?.ignore
     }).pipe(ts.createProject(configFilePath)())
     if (c?.genDts ?? true) {
-        outputTask({ task: task.dts, dest })
+        await outputTask({ task: task.dts, dest })
     }
     if (c?.genJs ?? true) {
         let jsTask = task.js
         if (c?.openCompress) {
             jsTask = jsTask.pipe(terser())
         }
-        outputTask({ task: jsTask, openSourcemap: c?.openSourcemap, dest })
+        await outputTask({ task: jsTask, openSourcemap: c?.openSourcemap, dest })
     }
 }

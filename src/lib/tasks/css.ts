@@ -20,7 +20,7 @@ export interface cssTaskConfigType extends configType {
     lessExt?: '.less' | '.css'
 }
 
-export default function (c?: cssTaskConfigType): NodeJS.ReadWriteStream {
+export default async function (c?: cssTaskConfigType): Promise<any> {
     const root = c?.root || process.cwd()
     const sassExt: cssTaskConfigType['sassExt'] = c?.sassExt || '.css'
     const lessExt: cssTaskConfigType['lessExt'] = c?.lessExt || '.css'
@@ -39,7 +39,7 @@ export default function (c?: cssTaskConfigType): NodeJS.ReadWriteStream {
     })
     sassTask = sassTask.pipe(postcss(plugins, { parser: require('postcss-scss') }))
     sassTask = sassTask.pipe(rename({ extname: sassExt }))
-    outputTask({ task: sassTask, dest })
+    await outputTask({ task: sassTask, dest })
     // less
     // ----------------------------------------------------------------------
     let lessTask = createTask({
@@ -49,7 +49,7 @@ export default function (c?: cssTaskConfigType): NodeJS.ReadWriteStream {
     })
     lessTask = lessTask.pipe(postcss(plugins, { parser: require('postcss-less') }))
     lessTask = lessTask.pipe(rename({ extname: lessExt }))
-    outputTask({ task: lessTask, dest })
+    await outputTask({ task: lessTask, dest })
     // postcss
     // ----------------------------------------------------------------------
     let postcssTask = createTask({
@@ -59,5 +59,5 @@ export default function (c?: cssTaskConfigType): NodeJS.ReadWriteStream {
     })
     postcssTask = postcssTask.pipe(postcss(plugins))
     postcssTask = postcssTask.pipe(rename({ extname: '.css' }))
-    return outputTask({ task: postcssTask, dest })
+    await outputTask({ task: postcssTask, dest })
 }

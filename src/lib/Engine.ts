@@ -1,6 +1,5 @@
 import path from 'path'
 import { forEach, map, isArray, assign, filter, isFunction } from 'lodash'
-import { TaskFunctionBase, TaskFunctionParams } from 'Undertaker'
 import * as gulp from 'gulp'
 import ora from 'ora'
 import chalk from 'chalk'
@@ -14,7 +13,7 @@ export interface configType {
     ignore?: any[]
 }
 
-export type taskType<C> = (c?: C) => ReturnType<TaskFunctionBase> | TaskFunctionParams
+export type taskType<C> = (c?: C) => Promise<any>
 export interface TaskConfigType<T, C> {
     name: string
     task: T

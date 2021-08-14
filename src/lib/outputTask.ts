@@ -7,10 +7,18 @@ export interface outputTaskArgType {
     openSourcemap?: boolean
 }
 
-export default function outputTask(c: outputTaskArgType): NodeJS.ReadWriteStream {
-    let task = c.task
-    if (c.openSourcemap) {
-        task = task.pipe(sourcemaps.write('.', { sourceRoot: './', includeContent: false }))
-    }
-    return task.pipe(gulp.dest(c.dest))
+export default function outputTask(c: outputTaskArgType): Promise<any> {
+    return new Promise((resolve, reject) => {
+        let task = c.task
+        if (c.openSourcemap) {
+            task = task.pipe(sourcemaps.write('.', { sourceRoot: './', includeContent: false }))
+        }
+        const stream = task.pipe(gulp.dest(c.dest))
+        stream.on('end', () => {
+            resolve(true)
+        })
+        stream.on('error', e => {
+            reject(e.message)
+        })
+    })
 }

@@ -6,9 +6,9 @@ import { mergePath } from '../utils'
 export interface copyTaskConfigType extends configType {
     files: createTaskArgType['src']
 }
-export default function (c?: copyTaskConfigType): NodeJS.ReadWriteStream {
+export default async function (c?: copyTaskConfigType): Promise<any> {
     const root = c?.root || process.cwd()
-    return outputTask({
+    await outputTask({
         task: createTask({ src: c.files, cwd: mergePath(root, c?.inputDir), ignore: c?.ignore }),
         dest: mergePath(root, c?.outputDir)
     })

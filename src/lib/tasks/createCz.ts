@@ -9,7 +9,7 @@ import { mergePath } from '../utils'
 export interface createCzConfig {
     root?: configType['root']
 }
-export default function (c?: createCzConfig): void {
+export default async function (c?: createCzConfig): Promise<any> {
     const root = c?.root || process.cwd()
     const czrcPath = mergePath(root, '.czrc')
     if (fs.existsSync(czrcPath)) {

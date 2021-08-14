@@ -15,7 +15,7 @@ export interface imageSpritesConfigType extends configType {
     cssName?: string
 }
 
-export default function (c?: imageSpritesConfigType): NodeJS.ReadWriteStream {
+export default async function (c?: imageSpritesConfigType): Promise<any> {
     const root = c?.root || process.cwd()
     const sizeLimit = c?.sizeLimit ?? 10
     const dest = mergePath(root, c?.outputDir)
@@ -33,5 +33,5 @@ export default function (c?: imageSpritesConfigType): NodeJS.ReadWriteStream {
             cssName: c?.cssName || 'sprite.css'
         })
     )
-    return outputTask({ task, dest })
+    await outputTask({ task, dest })
 }
