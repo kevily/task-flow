@@ -12,6 +12,10 @@ export interface babelTaskConfigType extends configType {
     plugins?: Array<any>
     extraPresets?: Array<any>
     extraPlugins?: Array<any>
+    /**
+     * @description Set the modules configuration for '@babel/preset-env'。
+     */
+    format?: 'esm' | 'auto'
 }
 
 export const scriptSrc = ['ts', 'js', 'tsx', 'jsx', 'mjs'].map(s => `**/*.${s}`)
@@ -32,7 +36,7 @@ export default function (c?: babelTaskConfigType): NodeJS.ReadWriteStream {
                 [
                     require.resolve('@babel/preset-env'),
                     {
-                        modules: 'auto'
+                        modules: c?.format === 'esm' ? false : 'auto'
                     }
                 ],
                 ...c?.extraPresets

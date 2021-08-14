@@ -8,7 +8,15 @@ import { mergePath } from '../utils'
 
 export interface cssTaskConfigType extends configType {
     closeCompress?: boolean
+    /**
+     * @description output ext
+     * @default '.css'
+     */
     sassExt?: '.scss' | '.sass' | '.css'
+    /**
+     * @description output ext
+     * @default '.css'
+     */
     lessExt?: '.less' | '.css'
 }
 

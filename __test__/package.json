@@ -6,7 +6,8 @@
   "license": "MIT",
   "scripts": {
     "start": "node ./start.js",
-    "i-task": "yarn remove 1k-tasks && yarn add ../"
+    "i-task": "yarn add ../",
+    "r-task": "yarn remove 1k-tasks"
   },
   "dependencies": {
     "1k-tasks": "../"

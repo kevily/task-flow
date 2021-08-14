@@ -15,7 +15,7 @@
         "start-task": "tsc -p ./tsconfig.task.json -w",
         "build-task": "rimraf ./lib && tsc -p ./tsconfig.task.json",
         "build": "yarn lint && yarn build-task && yarn build-bin",
-        "test": "yarn build && cd ./__test__ && yarn i-task && yarn start",
+        "test": "yarn build && cd ./__test__ && yarn r-task && yarn i-task && yarn start",
         "login": "npm login --registry http://registry.npmjs.org",
         "pub": "yarn push && npm publish --registry http://registry.npmjs.org",
         "lint": "eslint \"./src/**/*.{ts,js}\"",
