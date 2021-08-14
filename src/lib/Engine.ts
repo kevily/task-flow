@@ -1,4 +1,3 @@
-import path from 'path'
 import { forEach, map, isArray, assign, filter, isFunction } from 'lodash'
 import ora from 'ora'
 import chalk from 'chalk'
@@ -44,6 +43,9 @@ export default class Task {
         forEach(igore, str => {
             this.config.ignore.push(str)
         })
+    }
+    public setConfig(c?: configType) {
+        assign(this.config, c)
     }
     public registry<T extends taskType<Parameters<T>[0]>, C extends Parameters<T>[0]>(
         name: string,

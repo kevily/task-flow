@@ -7,7 +7,6 @@ import { babel } from '@rollup/plugin-babel'
 import commonjs from '@rollup/plugin-commonjs'
 import url = require('@rollup/plugin-url')
 import { terser } from 'rollup-plugin-terser'
-import filesize from 'rollup-plugin-filesize'
 import { DEFAULT_EXTENSIONS } from '@babel/core'
 import fsExtra = require('fs-extra')
 import { includes, some, isArray } from 'lodash'
@@ -19,7 +18,6 @@ export interface rollupTaskConfigType extends Omit<configType, 'ignore'> {
     external?: ExternalOption
     extraExternal?: (string | RegExp)[]
 }
-
 
 export default async function (c?: rollupTaskConfigType): Promise<any> {
     const root: rollupTaskConfigType['root'] = c?.root || process.cwd()
@@ -52,8 +50,7 @@ export default async function (c?: rollupTaskConfigType): Promise<any> {
                 exclude: /node_modules/
             }),
             url(),
-            terser(),
-            filesize()
+            terser()
         ]
     })
 
@@ -69,4 +66,3 @@ export default async function (c?: rollupTaskConfigType): Promise<any> {
     }
     await bundle.close()
 }
-
