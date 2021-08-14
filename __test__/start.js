@@ -1,13 +1,14 @@
-const { Engine, ts, css, babel, clear, copy, rollup } = require('1k-tasks')
+// const { Engine, ts, css, babel, clear, copy, rollup } = require('1k-tasks')
+const { Engine, ts, css, babel, clear, copy, rollup } = require('../lib')
 const task = new Engine()
 task.addInputIgnore(['**/ignore/**.*'])
 
+task.registry('clear', clear)
 task.registry('ts', ts, {
     genJs: false
 })
 task.registry('babel', babel)
 task.registry('css', css)
-task.registry('clear', clear)
 task.registry('copy', copy, {
     files: ['**/copy/.prettierrc.js', '**/copy/.czrc', '**/copy/**/*.*']
 })

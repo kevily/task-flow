@@ -1,6 +1,5 @@
 import { configType } from '../Engine'
 import createTask from '../createTask'
-import outputTask from '../outputTask'
 import { mergePath } from '../utils'
 import babel from 'gulp-babel'
 import terser from 'gulp-terser'
@@ -22,33 +21,36 @@ export const scriptSrc = ['ts', 'js', 'tsx', 'jsx', 'mjs'].map(s => `**/*.${s}`)
 export default async function (c?: babelTaskConfigType): Promise<any> {
     const root = c?.root || process.cwd()
     const dest = mergePath(root, c?.outputDir)
-    let task = createTask({
+    await createTask({
         src: scriptSrc,
         openSourcemap: c?.openCompress,
         cwd: mergePath(root, c?.inputDir),
-        ignore: c?.ignore
+        ignore: c?.ignore,
+        dest,
+        task(task) {
+            task = task.pipe(
+                babel({
+                    presets: c?.presets || [
+                        require.resolve('@babel/preset-typescript'),
+                        require.resolve('@babel/preset-react'),
+                        [
+                            require.resolve('@babel/preset-env'),
+                            {
+                                modules: c?.format === 'esm' ? false : 'auto'
+                            }
+                        ],
+                        ...(c?.extraPresets || [])
+                    ],
+                    plugins: c?.plugins || [
+                        require.resolve('@babel/plugin-transform-runtime'),
+                        ...(c?.extraPlugins || [])
+                    ]
+                })
+            )
+            if (c?.openCompress) {
+                task = task.pipe(terser())
+            }
+            return task
+        }
     })
-    task = task.pipe(
-        babel({
-            presets: c?.presets || [
-                require.resolve('@babel/preset-typescript'),
-                require.resolve('@babel/preset-react'),
-                [
-                    require.resolve('@babel/preset-env'),
-                    {
-                        modules: c?.format === 'esm' ? false : 'auto'
-                    }
-                ],
-                ...(c?.extraPresets || [])
-            ],
-            plugins: c?.plugins || [
-                require.resolve('@babel/plugin-transform-runtime'),
-                ...(c?.extraPlugins || [])
-            ]
-        })
-    )
-    if (c?.openCompress) {
-        task = task.pipe(terser())
-    }
-    await outputTask({ task, openSourcemap: c?.openSourcemap, dest: dest })
 }

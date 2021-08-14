@@ -1,7 +1,6 @@
 import ts from 'gulp-typescript'
 import terser from 'gulp-terser'
-import createTask from '../createTask'
-import outputTask from '../outputTask'
+import createTask, { createTaskArgType } from '../createTask'
 import { configType } from '../Engine'
 import { scriptSrc } from './babel'
 import { mergePath } from '../utils'
@@ -18,20 +17,35 @@ export default async function (c?: tsTaskConfigType): Promise<any> {
     const root = c?.root || process.cwd()
     const configFilePath = c?.configFilePath || mergePath(root, 'tsconfig.json')
     const dest = mergePath(root, c?.outputDir)
-    const task: any = createTask({
+    const config: Omit<createTaskArgType, 'task'> = {
         src: scriptSrc,
-        openSourcemap: c?.openSourcemap,
         cwd: mergePath(root, c?.inputDir),
-        ignore: c?.ignore
-    }).pipe(ts.createProject(configFilePath)())
-    if (c?.genDts ?? true) {
-        await outputTask({ task: task.dts, dest })
+        ignore: c?.ignore,
+        dest: dest
     }
-    if (c?.genJs ?? true) {
-        let jsTask = task.js
-        if (c?.openCompress) {
-            jsTask = jsTask.pipe(terser())
-        }
-        await outputTask({ task: jsTask, openSourcemap: c?.openSourcemap, dest })
+    if (c?.genDts ?? true) {
+        await createTask({
+            ...config,
+            task(task) {
+                task = task.pipe(ts.createProject(configFilePath)())
+                // @ts-ignore
+                return task.dts
+            }
+        })
+    }
+    if (c?.genJs) {
+        await createTask({
+            ...config,
+            openSourcemap: c?.openSourcemap,
+            task(task) {
+                task = task.pipe(ts.createProject(configFilePath)())
+                // @ts-ignore
+                task = task.js
+                if (c?.openCompress) {
+                    task = task.pipe(terser())
+                }
+                return task
+            }
+        })
     }
 }

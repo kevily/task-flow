@@ -1,6 +1,5 @@
 import path from 'path'
 import { forEach, map, isArray, assign, filter, isFunction } from 'lodash'
-import * as gulp from 'gulp'
 import ora from 'ora'
 import chalk from 'chalk'
 
@@ -27,7 +26,7 @@ export interface runConfigType {
 }
 
 export default class Task {
-    config: configType
+    private readonly config: configType
     private tasks: Map<string, Omit<TaskConfigType<any, any>, 'name'>>
     constructor(config?: configType) {
         this.config = {
@@ -43,7 +42,7 @@ export default class Task {
     }
     public addInputIgnore(igore: string[]): void {
         forEach(igore, str => {
-            this.config.ignore.push(path.join(this.config.root, str))
+            this.config.ignore.push(str)
         })
     }
     public registry<T extends taskType<Parameters<T>[0]>, C extends Parameters<T>[0]>(
@@ -61,23 +60,31 @@ export default class Task {
         const taskNames = isArray(c?.queue)
             ? filter(c?.queue, name => this.tasks.has(name))
             : this.getTaskNames()
-        const queue: any[] = map(taskNames, name => {
-            const { task, config } = this.tasks.get(name)
-            return async () => await task(config)
-        })
-        async function cb() {
-            if (isFunction(c?.callback)) {
-                await c.callback()
-            }
-            running.succeed()
-        }
-
         if (c?.sync) {
-            // @ts-ignore
-            gulp.series(queue, cb)(gulp)
+            for (let i = 0; i < taskNames.length; i++) {
+                const { task, config } = this.tasks.get(taskNames[i])
+                await task(config)
+            }
         } else {
-            // @ts-ignore
-            gulp.series(gulp.parallel(queue), cb)(gulp)
+            await Promise.all(
+                map(taskNames, name => {
+                    return new Promise((resolve, reject) => {
+                        const { task, config } = this.tasks.get(name)
+                        task(config)
+                            .then(() => {
+                                console.log('name', name)
+                                resolve(true)
+                            })
+                            .catch(e => {
+                                reject(e)
+                            })
+                    })
+                })
+            )
         }
+        if (isFunction(c?.callback)) {
+            await c.callback()
+        }
+        running.succeed()
     }
 }

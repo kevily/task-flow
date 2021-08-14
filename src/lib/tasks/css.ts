@@ -2,7 +2,6 @@ import postcss from 'gulp-postcss'
 import rename from 'gulp-rename'
 import cssnano from 'cssnano'
 import createTask from '../createTask'
-import outputTask from '../outputTask'
 import { configType } from '../Engine'
 import { mergePath } from '../utils'
 
@@ -32,32 +31,42 @@ export default async function (c?: cssTaskConfigType): Promise<any> {
     }
     // sass
     // ----------------------------------------------------------------------
-    let sassTask = createTask({
+    await createTask({
         src: ['**/*.sass', '**/*.scss'],
         cwd: srcCwd,
-        ignore: c?.ignore
+        ignore: c?.ignore,
+        dest,
+        task(task) {
+            task = task.pipe(postcss(plugins, { parser: require('postcss-scss') }))
+            task = task.pipe(rename({ extname: sassExt }))
+            return task
+        }
     })
-    sassTask = sassTask.pipe(postcss(plugins, { parser: require('postcss-scss') }))
-    sassTask = sassTask.pipe(rename({ extname: sassExt }))
-    await outputTask({ task: sassTask, dest })
+
     // less
     // ----------------------------------------------------------------------
-    let lessTask = createTask({
+    await createTask({
         src: ['**/*.less'],
         cwd: srcCwd,
-        ignore: c?.ignore
+        ignore: c?.ignore,
+        dest,
+        task(task) {
+            task = task.pipe(postcss(plugins, { parser: require('postcss-less') }))
+            task = task.pipe(rename({ extname: lessExt }))
+            return task
+        }
     })
-    lessTask = lessTask.pipe(postcss(plugins, { parser: require('postcss-less') }))
-    lessTask = lessTask.pipe(rename({ extname: lessExt }))
-    await outputTask({ task: lessTask, dest })
     // postcss
     // ----------------------------------------------------------------------
-    let postcssTask = createTask({
+    await createTask({
         src: ['**/*.pcss', '**/*.css'],
         cwd: srcCwd,
-        ignore: c?.ignore
+        ignore: c?.ignore,
+        dest,
+        task(task) {
+            task = task.pipe(postcss(plugins))
+            task = task.pipe(rename({ extname: '.css' }))
+            return task
+        }
     })
-    postcssTask = postcssTask.pipe(postcss(plugins))
-    postcssTask = postcssTask.pipe(rename({ extname: '.css' }))
-    await outputTask({ task: postcssTask, dest })
 }
