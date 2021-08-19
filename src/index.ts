@@ -1,12 +1,16 @@
 #!/usr/bin/env node
 
-import { ts, css, babel, createCz } from '../lib/tasks'
+import { ts, css, babel, createCz, cz } from '../lib/tasks'
 import * as commander from 'commander'
 import * as gulp from 'gulp'
 import ora = require('ora')
 import chalk = require('chalk')
 
-let program = commander.program
+let program = commander.program.version(
+    require('../package.json').version,
+    '-v, --version',
+    'output the current version'
+)
 
 function registry(name: string, description: string, task: any) {
     program = program.option(`--${name}`, description)
@@ -19,6 +23,7 @@ registry('createCz', 'crate cz config', async () => {
 registry('ts', 'Use tsc to build(js,ts)', ts)
 registry('babel', 'Use babel to build(js,ts)', babel)
 registry('css', 'Build css,scss,pcss,less', css)
+registry('cz', 'Use cz', cz)
 
 program.parse(process.argv)
 
@@ -28,4 +33,3 @@ const running = ora(chalk.yellow('Task running...')).start()
 const cb = async () => running.succeed()
 // @ts-ignore
 gulp.series(tasks, cb)(gulp)
-

@@ -1,5 +1,5 @@
-// const { Engine, ts, css, babel, clear, copy, rollup } = require('1k-tasks')
-const { Engine, ts, css, babel, clear, copy, rollup } = require('../lib')
+const { Engine, ts, css, babel, clear, copy, rollup } = require('1k-tasks')
+// const { Engine, ts, css, babel, clear, copy, rollup } = require('../lib')
 const task = new Engine()
 task.addInputIgnore(['**/ignore/**.*'])
 
