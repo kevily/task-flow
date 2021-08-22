@@ -74,7 +74,6 @@ export default class Task {
                         const { task, config } = this.tasks.get(name)
                         task(config)
                             .then(() => {
-                                console.log('name', name)
                                 resolve(true)
                             })
                             .catch(e => {

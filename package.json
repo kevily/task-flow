@@ -19,7 +19,7 @@
         "login": "npm login --registry http://registry.npmjs.org",
         "pub": "yarn push && npm publish --registry http://registry.npmjs.org",
         "lint": "eslint \"./src/**/*.{ts,js}\"",
-        "commit": "git add . && cz",
+        "commit": "git add . && node ./bin --cz",
         "push": "yarn test && yarn commit && git push"
     },
     "files": [
