@@ -2,12 +2,12 @@ import * as fs from 'fs'
 import * as fsExtra from 'fs-extra'
 import * as chalk from 'chalk'
 import { onGenCommand } from '../utils'
-import { configType } from '../Engine'
+import { engineConfigType } from '../Engine'
 import { spawnSync } from '../utils/spawnSync'
 import { mergePath } from '../utils'
 
 export interface createCzConfig {
-    root?: configType['root']
+    root?: engineConfigType['root']
 }
 export default async function (c?: createCzConfig): Promise<any> {
     const root = c?.root || process.cwd()

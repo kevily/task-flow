@@ -1,10 +1,10 @@
 import createTask from '../createTask'
-import { configType } from '../Engine'
+import { engineConfigType } from '../Engine'
 import spritesmith from 'gulp.spritesmith'
 import filterFile from 'gulp-filter'
 import { mergePath } from '../utils'
 
-export interface imageSpritesConfigType extends configType {
+export interface imageSpritesConfigType extends engineConfigType {
     /**
      * @description unit -> KB，if set to 0, there is no limit。
      * @default 10

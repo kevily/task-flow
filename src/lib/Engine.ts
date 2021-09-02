@@ -2,13 +2,13 @@ import { forEach, map, isArray, assign, filter, isFunction } from 'lodash'
 import ora from 'ora'
 import chalk from 'chalk'
 
-export interface configType {
+export interface engineConfigType {
     root?: string
     inputDir?: string
     input?: string
     outputDir?: string
     output?: string
-    ignore?: any[]
+    ignore?: string[]
 }
 
 export type taskType<C> = (c?: C) => Promise<any>
@@ -25,16 +25,16 @@ export interface runConfigType {
 }
 
 export default class Task {
-    private readonly config: configType
+    private readonly config: engineConfigType
     private tasks: Map<string, Omit<TaskConfigType<any, any>, 'name'>>
-    constructor(config?: configType) {
+    constructor(config?: engineConfigType) {
         this.config = {
             root: process.cwd(),
             inputDir: 'src',
             input: 'index.ts',
             outputDir: 'dist',
             output: 'index.js',
-            ignore: ['**/node_modules/**/*.*', '**/__tests__/**/*.*'],
+            ignore: ['node_modules', '__tests__'],
             ...config
         }
         this.tasks = new Map()
@@ -44,7 +44,7 @@ export default class Task {
             this.config.ignore.push(str)
         })
     }
-    public setConfig(c?: configType) {
+    public setConfig(c?: engineConfigType) {
         assign(this.config, c)
     }
     public registry<T extends taskType<Parameters<T>[0]>, C extends Parameters<T>[0]>(

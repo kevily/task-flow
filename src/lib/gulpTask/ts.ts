@@ -1,11 +1,11 @@
 import ts from 'gulp-typescript'
 import terser from 'gulp-terser'
 import createTask, { createTaskArgType } from '../createTask'
-import { configType } from '../Engine'
+import { engineConfigType } from '../Engine'
 import { scriptSrc } from './babel'
 import { mergePath } from '../utils'
 
-export interface tsTaskConfigType extends configType {
+export interface tsTaskConfigType extends engineConfigType {
     genDts?: boolean
     genJs?: boolean
     configFilePath?: string

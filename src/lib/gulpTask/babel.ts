@@ -1,10 +1,10 @@
-import { configType } from '../Engine'
+import { engineConfigType } from '../Engine'
 import createTask from '../createTask'
 import { mergePath } from '../utils'
 import babel from 'gulp-babel'
 import terser from 'gulp-terser'
 
-export interface babelTaskConfigType extends configType {
+export interface babelTaskConfigType extends engineConfigType {
     openSourcemap?: boolean
     openCompress?: boolean
     presets?: Array<any>

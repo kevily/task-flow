@@ -11,9 +11,9 @@ import { DEFAULT_EXTENSIONS } from '@babel/core'
 import fsExtra = require('fs-extra')
 import { includes, some, isArray } from 'lodash'
 import { mergePath } from '../utils'
-import { configType } from '../Engine'
+import { engineConfigType } from '../Engine'
 
-export interface rollupTaskConfigType extends Omit<configType, 'ignore'> {
+export interface rollupTaskConfigType extends Omit<engineConfigType, 'ignore'> {
     formats?: Array<ModuleFormat>
     external?: ExternalOption
     extraExternal?: (string | RegExp)[]

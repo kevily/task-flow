@@ -2,10 +2,10 @@ import postcss from 'gulp-postcss'
 import rename from 'gulp-rename'
 import cssnano from 'cssnano'
 import createTask from '../createTask'
-import { configType } from '../Engine'
+import { engineConfigType } from '../Engine'
 import { mergePath } from '../utils'
 
-export interface cssTaskConfigType extends configType {
+export interface cssTaskConfigType extends engineConfigType {
     closeCompress?: boolean
     /**
      * @description output ext

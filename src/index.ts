@@ -1,6 +1,6 @@
 #!/usr/bin/env node
 
-import { ts, css, babel, createCz, cz } from '../lib/tasks'
+import { ts, css, babel, createCz, cz } from '../lib'
 import * as commander from 'commander'
 import * as gulp from 'gulp'
 import ora = require('ora')
