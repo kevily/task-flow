@@ -34,7 +34,7 @@ export default class Task {
             input: 'index.ts',
             outputDir: 'dist',
             output: 'index.js',
-            ignore: ['node_modules', '__tests__'],
+            ignore: ['**/node_modules/*', '**/__tests__/*'],
             ...config
         }
         this.tasks = new Map()
