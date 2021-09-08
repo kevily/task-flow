@@ -1,21 +1,22 @@
 import * as gulp from 'gulp'
 import { SrcOptions } from 'vinyl-fs'
 import sourcemaps from 'gulp-sourcemaps'
-import { isFunction, omit } from 'lodash'
+import { assign, isFunction, omit } from 'lodash'
+import { GULP_TASK_DEFAULT_CONFIG } from './configs/defaultConfig'
 
-export interface createTaskArgType extends SrcOptions {
+export interface createGulpTaskArgType extends SrcOptions {
     src: string | string[]
     openSourcemap?: boolean
-    dest: string
+    dest?: string
     task?: (task: NodeJS.ReadWriteStream) => NodeJS.ReadWriteStream
 }
 
-export default function (c: createTaskArgType) {
+export default function (c: createGulpTaskArgType) {
     return new Promise((resolve, reject) => {
-        let task = gulp.src(c.src, {
-            ignore: ['**/node_modules/**/*.*', '**/__tests__/**/*.*'],
-            ...omit(c, ['openSourcemap', 'src'])
-        })
+        let task = gulp.src(
+            c.src,
+            assign({}, GULP_TASK_DEFAULT_CONFIG, omit(c, ['openSourcemap', 'src']))
+        )
         task.on('end', () => {
             resolve(true)
         })
@@ -31,6 +32,8 @@ export default function (c: createTaskArgType) {
         if (c.openSourcemap) {
             task = task.pipe(sourcemaps.write('.', { sourceRoot: './', includeContent: false }))
         }
-        task.pipe(gulp.dest(c.dest))
+        if (c.dest) {
+            task.pipe(gulp.dest(c.dest))
+        }
     })
 }

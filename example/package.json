@@ -1,0 +1,16 @@
+{
+    "name": "__test__",
+    "version": "1.0.0",
+    "main": "index.js",
+    "author": "kevily",
+    "license": "MIT",
+    "scripts": {
+        "start": "node ./start.js",
+        "i-task": "yarn add ../",
+        "r-task": "yarn remove 1k-tasks",
+        "ri-task": "yarn r-task && yarn i-task"
+    },
+    "dependencies": {
+        "1k-tasks": "../"
+    }
+}

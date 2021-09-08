@@ -1,11 +1,13 @@
 import postcss from 'gulp-postcss'
 import rename from 'gulp-rename'
 import cssnano from 'cssnano'
-import createTask from '../createTask'
-import { engineConfigType } from '../Engine'
+import createGulpTask from '../createGulpTask'
+import { GulpTaskConfigType } from '../GulpTaskEngine'
 import { mergePath } from '../utils'
+import { assign } from 'lodash'
+import { GULP_TASK_DEFAULT_CONFIG } from '../configs/defaultConfig'
 
-export interface cssTaskConfigType extends engineConfigType {
+export interface cssTaskConfigType extends GulpTaskConfigType {
     closeCompress?: boolean
     /**
      * @description output ext
@@ -19,19 +21,19 @@ export interface cssTaskConfigType extends engineConfigType {
     lessExt?: '.less' | '.css'
 }
 
-export default async function (c?: cssTaskConfigType): Promise<any> {
-    const root = c?.root || process.cwd()
+export default async function (config?: cssTaskConfigType): Promise<any> {
+    const c = assign({}, GULP_TASK_DEFAULT_CONFIG, config)
     const sassExt: cssTaskConfigType['sassExt'] = c?.sassExt || '.css'
     const lessExt: cssTaskConfigType['lessExt'] = c?.lessExt || '.css'
-    const dest = mergePath(root, c?.outputDir)
-    const srcCwd = mergePath(root, c?.inputDir)
+    const dest = mergePath(c.root, c?.outputDir)
+    const srcCwd = mergePath(c.root, c?.workDir)
     const plugins = []
     if (!c?.closeCompress) {
         plugins.push(cssnano())
     }
     // sass
     // ----------------------------------------------------------------------
-    await createTask({
+    await createGulpTask({
         src: ['**/*.sass', '**/*.scss'],
         cwd: srcCwd,
         ignore: c?.ignore,
@@ -45,7 +47,7 @@ export default async function (c?: cssTaskConfigType): Promise<any> {
 
     // less
     // ----------------------------------------------------------------------
-    await createTask({
+    await createGulpTask({
         src: ['**/*.less'],
         cwd: srcCwd,
         ignore: c?.ignore,
@@ -58,7 +60,7 @@ export default async function (c?: cssTaskConfigType): Promise<any> {
     })
     // postcss
     // ----------------------------------------------------------------------
-    await createTask({
+    await createGulpTask({
         src: ['**/*.pcss', '**/*.css'],
         cwd: srcCwd,
         ignore: c?.ignore,

@@ -1,10 +1,12 @@
-import { engineConfigType } from '../Engine'
-import createTask from '../createTask'
+import { GulpTaskConfigType } from '../GulpTaskEngine'
+import createGulpTask from '../createGulpTask'
 import { mergePath } from '../utils'
 import babel from 'gulp-babel'
 import terser from 'gulp-terser'
+import { assign } from 'lodash'
+import { GULP_TASK_DEFAULT_CONFIG } from '../configs/defaultConfig'
 
-export interface babelTaskConfigType extends engineConfigType {
+export interface babelTaskConfigType extends GulpTaskConfigType {
     openSourcemap?: boolean
     openCompress?: boolean
     presets?: Array<any>
@@ -18,13 +20,13 @@ export interface babelTaskConfigType extends engineConfigType {
 }
 
 export const scriptSrc = ['ts', 'js', 'tsx', 'jsx', 'mjs'].map(s => `**/*.${s}`)
-export default async function (c?: babelTaskConfigType): Promise<any> {
-    const root = c?.root || process.cwd()
-    const dest = mergePath(root, c?.outputDir)
-    await createTask({
+export default async function (config?: babelTaskConfigType): Promise<any> {
+    const c = assign({}, GULP_TASK_DEFAULT_CONFIG, config)
+    const dest = mergePath(c.root, c?.outputDir)
+    await createGulpTask({
         src: scriptSrc,
         openSourcemap: c?.openCompress,
-        cwd: mergePath(root, c?.inputDir),
+        cwd: mergePath(c.root, c?.workDir),
         ignore: c?.ignore,
         dest,
         task(task) {

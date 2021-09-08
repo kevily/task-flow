@@ -1,11 +1,13 @@
 import ts from 'gulp-typescript'
 import terser from 'gulp-terser'
-import createTask, { createTaskArgType } from '../createTask'
-import { engineConfigType } from '../Engine'
+import createGulpTask, { createGulpTaskArgType } from '../createGulpTask'
+import { GulpTaskConfigType } from '../GulpTaskEngine'
 import { scriptSrc } from './babel'
 import { mergePath } from '../utils'
+import { assign } from 'lodash'
+import { GULP_TASK_DEFAULT_CONFIG } from '../configs/defaultConfig'
 
-export interface tsTaskConfigType extends engineConfigType {
+export interface tsTaskConfigType extends GulpTaskConfigType {
     genDts?: boolean
     genJs?: boolean
     configFilePath?: string
@@ -13,19 +15,19 @@ export interface tsTaskConfigType extends engineConfigType {
     openCompress?: boolean
 }
 
-export default async function (c?: tsTaskConfigType): Promise<any> {
-    const root = c?.root || process.cwd()
-    const configFilePath = c?.configFilePath || mergePath(root, 'tsconfig.json')
-    const dest = mergePath(root, c?.outputDir)
-    const config: Omit<createTaskArgType, 'task'> = {
+export default async function (config?: tsTaskConfigType): Promise<any> {
+    const c = assign({}, GULP_TASK_DEFAULT_CONFIG, config)
+    const configFilePath = c?.configFilePath || mergePath(c.root, 'tsconfig.json')
+    const dest = mergePath(c.root, c?.outputDir)
+    const tsConfig: Omit<createGulpTaskArgType, 'task'> = {
         src: scriptSrc,
-        cwd: mergePath(root, c?.inputDir),
+        cwd: mergePath(c.root, c?.workDir),
         ignore: c?.ignore,
         dest: dest
     }
     if (c?.genDts ?? true) {
-        await createTask({
-            ...config,
+        await createGulpTask({
+            ...tsConfig,
             task(task) {
                 task = task.pipe(ts.createProject(configFilePath)())
                 // @ts-ignore
@@ -34,8 +36,8 @@ export default async function (c?: tsTaskConfigType): Promise<any> {
         })
     }
     if (c?.genJs) {
-        await createTask({
-            ...config,
+        await createGulpTask({
+            ...tsConfig,
             openSourcemap: c?.openSourcemap,
             task(task) {
                 task = task.pipe(ts.createProject(configFilePath)())

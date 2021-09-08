@@ -1,8 +1,8 @@
 #!/usr/bin/env node
 
 import { ts, css, babel, createCz, cz } from '../lib'
-import * as commander from 'commander'
-import * as gulp from 'gulp'
+import commander = require('commander')
+import gulp = require('gulp')
 import ora = require('ora')
 import chalk = require('chalk')
 

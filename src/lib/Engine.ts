@@ -1,14 +1,13 @@
-import { forEach, map, isArray, assign, filter, isFunction } from 'lodash'
+import { map, isArray, assign, filter, isFunction, isBoolean } from 'lodash'
 import ora from 'ora'
 import chalk from 'chalk'
 
-export interface engineConfigType {
+export interface EngineConfigType {
     root?: string
-    inputDir?: string
-    input?: string
-    outputDir?: string
-    output?: string
-    ignore?: string[]
+    /**
+     * @description Task work dir.
+     */
+    workDir?: string
 }
 
 export type taskType<C> = (c?: C) => Promise<any>
@@ -20,31 +19,30 @@ export interface TaskConfigType<T, C> {
 export interface runConfigType {
     sync?: boolean
     queue?: string[]
-    tip?: string
+    /**
+     * @description If set to false, it is not displayed
+     */
+    tip?: string | boolean
     callback?: () => Promise<any>
 }
 
-export default class Task {
-    private readonly config: engineConfigType
-    private tasks: Map<string, Omit<TaskConfigType<any, any>, 'name'>>
-    constructor(config?: engineConfigType) {
-        this.config = {
-            root: process.cwd(),
-            inputDir: 'src',
-            input: 'index.ts',
-            outputDir: 'dist',
-            output: 'index.js',
-            ignore: ['**/node_modules/*', '**/__tests__/*'],
-            ...config
-        }
+export default class Task<EC extends { [key: string]: any }> {
+    protected config: EngineConfigType & EC
+    protected tasks: Map<string, Omit<TaskConfigType<any, any>, 'name'>>
+    constructor(config?: EngineConfigType & EC) {
+        this.config = assign(
+            {
+                root: process.cwd(),
+                workDir: 'src'
+            },
+            config
+        )
         this.tasks = new Map()
+
+        this.getTaskNames = this.getTaskNames.bind(this)
+        this.run = this.run.bind(this)
     }
-    public addInputIgnore(igore: string[]): void {
-        forEach(igore, str => {
-            this.config.ignore.push(str)
-        })
-    }
-    public setConfig(c?: engineConfigType) {
+    public setConfig(c?: EngineConfigType) {
         assign(this.config, c)
     }
     public registry<T extends taskType<Parameters<T>[0]>, C extends Parameters<T>[0]>(
@@ -58,7 +56,10 @@ export default class Task {
         return Array.from(this.tasks.keys())
     }
     public async run(c?: runConfigType): Promise<any> {
-        const running = ora(chalk.yellow(c?.tip || 'Task running...\n')).start()
+        let running = ora()
+        if (!isBoolean(c?.tip)) {
+            running = running.start(chalk.yellow(c?.tip || 'Task running...\n'))
+        }
         const taskNames = isArray(c?.queue)
             ? filter(c?.queue, name => this.tasks.has(name))
             : this.getTaskNames()

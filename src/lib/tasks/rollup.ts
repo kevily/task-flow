@@ -9,19 +9,32 @@ import url = require('@rollup/plugin-url')
 import { terser } from 'rollup-plugin-terser'
 import { DEFAULT_EXTENSIONS } from '@babel/core'
 import fsExtra = require('fs-extra')
-import { includes, some, isArray } from 'lodash'
+import { includes, some, isArray, assign } from 'lodash'
 import { mergePath } from '../utils'
-import { engineConfigType } from '../Engine'
+import { EngineConfigType } from '../Engine'
+import { ROLLUP_DEFAULT_CONFIG } from '../configs/defaultConfig'
 
-export interface rollupTaskConfigType extends Omit<engineConfigType, 'ignore'> {
+export interface rollupConfigType extends EngineConfigType {
+    /**
+     * @description input file
+     * @default 'index.ts'
+     */
+    input?: string
+    /**
+     * @default dist
+     */
+    outputDir?: string
+    /**
+     * @default ['esm', 'cjs']
+     */
     formats?: Array<ModuleFormat>
     external?: ExternalOption
     extraExternal?: (string | RegExp)[]
 }
 
-export default async function (c?: rollupTaskConfigType): Promise<any> {
-    const root: rollupTaskConfigType['root'] = c?.root || process.cwd()
-    const srcPath = mergePath(c?.inputDir || 'src', c?.input || 'index.ts')
+export default async function (config?: rollupConfigType): Promise<any> {
+    const c = assign({}, ROLLUP_DEFAULT_CONFIG, config)
+    const srcPath = mergePath(c.workDir, c.input)
     const srcPathInfo = path.parse(srcPath)
     const bundle = await rollup({
         external:
@@ -36,11 +49,11 @@ export default async function (c?: rollupTaskConfigType): Promise<any> {
                 }
                 return some(ignore, k => includes(id, k))
             },
-        input: mergePath(root, srcPath),
+        input: mergePath(c.root, srcPath),
         plugins: [
             styles(),
             typescript({
-                tsconfig: mergePath(root, 'tsconfig.json')
+                tsconfig: mergePath(c.root, 'tsconfig.json')
             }),
             nodeResolve(),
             commonjs(),
@@ -54,11 +67,10 @@ export default async function (c?: rollupTaskConfigType): Promise<any> {
         ]
     })
 
-    const output = mergePath(root, c?.outputDir)
-    const formats = c?.formats || ['esm', 'cjs']
+    const output = mergePath(c.root, c?.outputDir)
     fsExtra.removeSync(output)
-    for (let index = 0; index < formats.length; index++) {
-        const format = formats[index]
+    for (let index = 0; index < c.formats.length; index++) {
+        const format = c.formats[index]
         await bundle.write({
             file: mergePath(output, `${srcPathInfo.name}.${format}.js`),
             format
