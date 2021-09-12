@@ -1,16 +1,23 @@
-import { assign, omit } from 'lodash'
+import { assign, isString, omit } from 'lodash'
 import rimraf, { Options } from 'rimraf'
+import { mergePath } from '../utils'
 
 export interface clearConfigType extends Options {
     paths: string[]
+    /**
+     * @description Since the glob.cwd does not work. so, add root is used instead.
+     */
+    root?: string
 }
 
 /**
  * @param {Object} config Inherited from rimrafOptions
  */
 export default async function (config?: clearConfigType): Promise<any> {
-    const c = assign<clearConfigType, clearConfigType>({ paths: [] }, config)
+    const c = assign<clearConfigType, clearConfigType>({ paths: [], root: process.cwd() }, config)
     for (const p of c.paths) {
-        rimraf.sync(p, omit(config, ['paths']))
+        if (isString(c?.root) && isString(p)) {
+            rimraf.sync(mergePath(c?.root, p), omit(c, ['paths', 'root']))
+        }
     }
 }
