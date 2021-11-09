@@ -63,30 +63,34 @@ export default class Task<EC extends { [key: string]: any }> {
         const taskNames = isArray(c?.queue)
             ? filter(c?.queue, name => this.tasks.has(name))
             : this.getTaskNames()
-        if (c?.sync) {
-            for (let i = 0; i < taskNames.length; i++) {
-                const { task, config } = this.tasks.get(taskNames[i])
-                await task(config)
-            }
-        } else {
-            await Promise.all(
-                map(taskNames, name => {
-                    return new Promise((resolve, reject) => {
-                        const { task, config } = this.tasks.get(name)
-                        task(config)
-                            .then(() => {
-                                resolve(true)
-                            })
-                            .catch(e => {
-                                reject(e)
-                            })
+        try {
+            if (c?.sync) {
+                for (let i = 0; i < taskNames.length; i++) {
+                    const { task, config } = this.tasks.get(taskNames[i])
+                    await task(config)
+                }
+            } else {
+                await Promise.all(
+                    map(taskNames, name => {
+                        return new Promise((resolve, reject) => {
+                            const { task, config } = this.tasks.get(name)
+                            task(config)
+                                .then(() => {
+                                    resolve(true)
+                                })
+                                .catch(e => {
+                                    reject(e)
+                                })
+                        })
                     })
-                })
-            )
+                )
+            }
+            if (isFunction(c?.callback)) {
+                await c.callback()
+            }
+            running.succeed()
+        } catch (e) {
+            running.fail()
         }
-        if (isFunction(c?.callback)) {
-            await c.callback()
-        }
-        running.succeed()
     }
 }
