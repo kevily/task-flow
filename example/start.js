@@ -1,5 +1,15 @@
-const { Engine, ts, css, babel, clear, copy, rollup, GulpTaskEngine } = require('1k-tasks')
-const path = require('path')
+const {
+    Engine,
+    ts,
+    css,
+    babel,
+    clear,
+    copy,
+    rollup,
+    GulpTaskEngine,
+    eslint,
+    stylelint
+} = require('1k-tasks')
 // const { Engine, ts, css, babel, clear, copy, rollup, GulpTaskEngine } = require('../lib')
 
 // Create gulpTask
@@ -16,6 +26,8 @@ gulpTask.registry('copy', copy, {
 
 // Create core task.
 const task = new Engine()
+task.registry('eslint', eslint)
+task.registry('stylelint', stylelint)
 task.registry('clear', clear, {
     paths: ['./dist'],
     /**
@@ -34,7 +46,7 @@ task.registry('rollup', rollup, {
 // run queue
 task.run({
     sync: true,
-    queue: ['clear', 'gulpTask'],
+    queue: ['eslint', 'clear', 'gulpTask'],
     tip: 'build: default...\n'
 })
 task.run({ sync: true, queue: ['rollup'], tip: 'build: rollup...\n' })

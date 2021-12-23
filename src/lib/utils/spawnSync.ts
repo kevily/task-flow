@@ -11,11 +11,12 @@ export function spawnSync(
     args?: ReadonlyArray<string>,
     options?: SpawnOptions
 ): void {
-    const { error } = cp.spawnSync(command, args, {
+    const { status, error } = cp.spawnSync(command, args, {
         ...DEFAULT_OPTION,
-        ...options
+        ...options,
+        encoding: 'utf-8'
     })
-    if (error) {
+    if ((status && status !== 0) || error) {
         process.exit(1)
     }
 }

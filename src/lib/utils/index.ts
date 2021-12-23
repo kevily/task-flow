@@ -13,3 +13,11 @@ export function onGenCommand(): 'yarn' | 'npm' {
 export function mergePath(root: string, p: string): string {
     return path.join(root, p || '')
 }
+
+export function resolvePackage(pkg) {
+    try {
+        return require.resolve(pkg)
+    } catch {
+        return false
+    }
+}
