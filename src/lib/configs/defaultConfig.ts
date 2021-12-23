@@ -12,6 +12,7 @@ export const GULP_TASK_DEFAULT_CONFIG: GulpTaskConfigType = {
 export const ROLLUP_DEFAULT_CONFIG: rollupConfigType = {
     root,
     workDir: 'src',
+    outputDir: 'dist',
     input: 'index.ts',
     formats: ['esm', 'cjs']
 }
