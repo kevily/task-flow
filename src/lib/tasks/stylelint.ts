@@ -5,10 +5,10 @@ import { assign } from 'lodash'
 
 export interface stylelintConfigType extends EngineConfigType {}
 export default async function eslint(c?: stylelintConfigType): Promise<any> {
-    const config = assign({ root: process.cwd() }, c)
+    const config: stylelintConfigType = assign({ root: process.cwd(), workDir: 'src' }, c)
     const stylelintpath = resolvePackage('stylelint/bin/stylelint.js')
     if (stylelintpath) {
-        spawnSync('node', [stylelintpath, '"./src/**/*.{less,scss,css}"', '--fix'], {
+        spawnSync('node', [stylelintpath, `"./${config.workDir}/**/*.{less,scss,css}"`, '--fix'], {
             cwd: config.root
         })
     }
