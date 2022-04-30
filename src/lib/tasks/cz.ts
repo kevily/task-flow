@@ -3,6 +3,7 @@ import path = require('path')
 import fsExtra = require('fs-extra')
 import { assign } from 'lodash'
 import { resolvePackage } from '../utils'
+import { spawnSync } from '../utils/spawnSync'
 
 export interface czConfigType extends EngineConfigType {}
 export default async function cz(c: czConfigType) {
@@ -17,4 +18,5 @@ export default async function cz(c: czConfigType) {
         }
     })
     fsExtra.writeJSONSync(pkgPath, pkg, { spaces: 4 })
+    spawnSync('cz')
 }
