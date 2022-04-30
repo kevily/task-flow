@@ -1,22 +1,24 @@
-import { EngineConfigType } from '../Engine'
-import path = require('path')
-import fsExtra = require('fs-extra')
-import { assign } from 'lodash'
 import { resolvePackage } from '../utils'
 import { spawnSync } from '../utils/spawnSync'
+import inquirer = require('inquirer')
+import createCz, { createCzConfig } from './createCz'
 
-export interface czConfigType extends EngineConfigType {}
+export interface czConfigType extends createCzConfig {}
 export default async function cz(c: czConfigType) {
+    let isRun = true
     if (!resolvePackage('commitizen') || !resolvePackage('cz-adapter-eslint')) {
-        throw new Error('Please install commitizen and cz-adapter-eslint')
-    }
-    const pkgPath = path.join(c.root || process.cwd(), 'package.json')
-    const pkg: { [key: string]: any } = fsExtra.readJSONSync(pkgPath)
-    pkg.config = assign({}, pkg.config, {
-        commitizen: {
-            path: './node_modules/cz-adapter-eslint'
+        const { isInstall } = await inquirer.prompt([
+            {
+                name: 'isInstall',
+                type: 'confirm',
+                message: 'Please install commitizen，cz-adapter-eslint, running the createCz, now?'
+            }
+        ])
+        if (isInstall) {
+            await createCz(c)
+        } else {
+            isRun = false
         }
-    })
-    fsExtra.writeJSONSync(pkgPath, pkg, { spaces: 4 })
-    spawnSync('cz')
+    }
+    isRun && spawnSync('cz')
 }

@@ -1,24 +1,31 @@
-import * as fs from 'fs'
 import * as fsExtra from 'fs-extra'
-import * as chalk from 'chalk'
-import { onGenCommand } from '../utils'
+import { onGenCommand, resolvePackage } from '../utils'
 import { EngineConfigType } from '../Engine'
 import { spawnSync } from '../utils/spawnSync'
-import { mergePath } from '../utils'
-import { assign } from 'lodash'
+import { assign, size } from 'lodash'
+import * as path from 'path'
 
 export interface createCzConfig extends EngineConfigType {}
 export default async function (config?: createCzConfig): Promise<any> {
-    const c = assign({ root: process.cwd() }, config)
-    const czrcPath = mergePath(mergePath(c.root, c?.workDir), '.czrc')
-    if (fs.existsSync(czrcPath)) {
-        console.log(chalk.red('The.czrc file already exists.'))
-        process.exit(1)
+    const rootPath = config.root || process.cwd()
+    const installPkgs = []
+    if (!resolvePackage('commitizen')) {
+        installPkgs.push('commitizen')
     }
-    fsExtra.writeJsonSync(czrcPath, {
-        path: 'cz-adapter-eslint'
+    if (!resolvePackage('cz-adapter-eslint')) {
+        installPkgs.push('cz-adapter-eslint')
+    }
+    if (size(installPkgs) > 0) {
+        spawnSync(onGenCommand(), ['add', ...installPkgs, '-D'], {
+            cwd: rootPath
+        })
+    }
+    const pkgPath = path.join(rootPath, 'package.json')
+    const pkg: { [key: string]: any } = fsExtra.readJSONSync(pkgPath)
+    pkg.config = assign({}, pkg.config, {
+        commitizen: {
+            path: './node_modules/cz-adapter-eslint'
+        }
     })
-    spawnSync(onGenCommand(), ['add', 'commitizen', 'cz-adapter-eslint', '-D'], {
-        cwd: c.root
-    })
+    fsExtra.writeJSONSync(pkgPath, pkg, { spaces: 4 })
 }
