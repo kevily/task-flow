@@ -12,5 +12,8 @@
     },
     "dependencies": {
         "1k-tasks": "../"
+    },
+    "devDependencies": {
+        "gulp": "^4.0.2"
     }
 }

@@ -1,6 +1,6 @@
 #!/usr/bin/env node
 
-import { ts, css, babel, createCz, cz, eslint, stylelint } from '../lib'
+import { dts, css, babel, createCz, cz, eslint, stylelint } from '../lib'
 import commander = require('commander')
 import gulp = require('gulp')
 import ora = require('ora')
@@ -22,7 +22,7 @@ registry('createCz', 'crate cz config', async () => {
 })
 registry('eslint', 'eslint', eslint)
 registry('stylelint', 'stylelint', stylelint)
-registry('ts', 'Use tsc to build(js,ts)', ts)
+registry('dts', 'Generate .d.ts', dts)
 registry('babel', 'Use babel to build(js,ts)', babel)
 registry('css', 'Build css,scss,pcss,less', css)
 registry('cz', 'Use cz', cz)

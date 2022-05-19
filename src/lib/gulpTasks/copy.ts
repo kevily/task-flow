@@ -1,16 +1,16 @@
 import { GulpTaskConfigType } from '../GulpTaskEngine'
-import createGulpTask, { createGulpTaskArgType } from '../createGulpTask'
+import runGulpTask, { runGulpTaskArgType } from '../runGulpTask'
 import { mergePath } from '../utils'
 import { assign } from 'lodash'
 import { GULP_TASK_DEFAULT_CONFIG } from '../configs/defaultConfig'
 
 export interface copyTaskConfigType extends GulpTaskConfigType {
-    files: createGulpTaskArgType['src']
+    files: runGulpTaskArgType['src']
 }
 
-export default async function (config?: copyTaskConfigType): Promise<any> {
+export default function (config?: copyTaskConfigType) {
     const c = assign({}, GULP_TASK_DEFAULT_CONFIG, config)
-    await createGulpTask({
+    return runGulpTask({
         src: c.files,
         cwd: mergePath(c.root, c?.workDir),
         ignore: c?.ignore,

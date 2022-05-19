@@ -1,4 +1,5 @@
-import { map, isArray, assign, filter, isFunction, isBoolean } from 'lodash'
+import * as gulp from 'gulp'
+import { isArray, assign, filter, isBoolean, keys, values, pick, has, size } from 'lodash'
 import ora from 'ora'
 import chalk from 'chalk'
 
@@ -28,7 +29,7 @@ export interface runConfigType {
 
 export default class Task<EC extends { [key: string]: any }> {
     protected config: EngineConfigType & EC
-    protected tasks: Map<string, Omit<TaskConfigType<any, any>, 'name'>>
+    protected tasks: { [key: string]: () => Promise<any> }
     constructor(config?: EngineConfigType & EC) {
         this.config = assign(
             {
@@ -37,7 +38,7 @@ export default class Task<EC extends { [key: string]: any }> {
             },
             config
         )
-        this.tasks = new Map()
+        this.tasks = {}
 
         this.getTaskNames = this.getTaskNames.bind(this)
         this.run = this.run.bind(this)
@@ -50,47 +51,36 @@ export default class Task<EC extends { [key: string]: any }> {
         task: T,
         config?: C
     ): void {
-        this.tasks.set(name, { task, config: assign({}, this.config, config) })
+        this.tasks[name] = () => task(assign({}, this.config, config))
     }
     public getTaskNames() {
-        return Array.from(this.tasks.keys())
+        return keys(this.tasks)
     }
     public async run(c?: runConfigType): Promise<any> {
         let running = ora()
-        if (!isBoolean(c?.tip)) {
-            running = running.start(chalk.yellow(c?.tip || 'Task running...\n'))
-        }
-        const taskNames = isArray(c?.queue)
-            ? filter(c?.queue, name => this.tasks.has(name))
-            : this.getTaskNames()
         try {
-            if (c?.sync) {
-                for (let i = 0; i < taskNames.length; i++) {
-                    const { task, config } = this.tasks.get(taskNames[i])
-                    await task(config)
+            if (!isBoolean(c?.tip)) {
+                running = running.start(chalk.yellow(`${c?.tip || 'Task running...'}\n`))
+            }
+            const taskNames = isArray(c?.queue)
+                ? filter(c?.queue, name => has(this.tasks, name))
+                : this.getTaskNames()
+            if (size(taskNames) > 0) {
+                const callback = () => {
+                    c?.callback?.()
+                    running.succeed()
                 }
-            } else {
-                await Promise.all(
-                    map(taskNames, name => {
-                        return new Promise((resolve, reject) => {
-                            const { task, config } = this.tasks.get(name)
-                            task(config)
-                                .then(() => {
-                                    resolve(true)
-                                })
-                                .catch(e => {
-                                    reject(e)
-                                })
-                        })
-                    })
-                )
+                const tasks = values(pick(this.tasks, taskNames))
+                if (c?.sync) {
+                    // @ts-ignore
+                    gulp.series(...tasks, callback)(gulp)
+                } else {
+                    // @ts-ignore
+                    gulp.series(gulp.parallel(...tasks), callback)(gulp)
+                }
             }
-            if (isFunction(c?.callback)) {
-                await c.callback()
-            }
-            running.succeed()
         } catch (e) {
-            running.fail()
+            running.fail(e.message)
         }
     }
 }

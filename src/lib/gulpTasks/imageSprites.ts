@@ -1,4 +1,4 @@
-import createGulpTask from '../createGulpTask'
+import runGulpTask from '../runGulpTask'
 import { GulpTaskConfigType } from '../GulpTaskEngine'
 import spritesmith from 'gulp.spritesmith'
 import filterFile from 'gulp-filter'
@@ -16,12 +16,12 @@ export interface imageSpritesConfigType extends GulpTaskConfigType {
     cssName?: string
 }
 
-export default async function (config?: imageSpritesConfigType): Promise<any> {
+export default function (config?: imageSpritesConfigType) {
     const c = assign({}, GULP_TASK_DEFAULT_CONFIG, config)
     const root = c?.root || process.cwd()
     const sizeLimit = c?.sizeLimit ?? 10
     const dest = mergePath(root, c?.outputDir)
-    await createGulpTask({
+    return runGulpTask({
         src: '**/*.png',
         cwd: mergePath(c?.root, c?.workDir || ''),
         ignore: c?.ignore,

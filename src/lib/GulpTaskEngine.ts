@@ -8,7 +8,7 @@ export interface GulpTaskConfigType extends EngineConfigType {
     outputDir?: string
 }
 class GulpTaskEngine extends Engine<GulpTaskConfigType> {
-    static ts = gulpTask.ts
+    static dts = gulpTask.dts
     static babel = gulpTask.babel
     static css = gulpTask.css
     static copy = gulpTask.copy

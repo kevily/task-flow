@@ -1,5 +1,5 @@
 import { GulpTaskConfigType } from '../GulpTaskEngine'
-import createGulpTask from '../createGulpTask'
+import runGulpTask from '../runGulpTask'
 import { mergePath } from '../utils'
 import babel from 'gulp-babel'
 import terser from 'gulp-terser'
@@ -20,10 +20,10 @@ export interface babelTaskConfigType extends GulpTaskConfigType {
 }
 
 export const scriptSrc = ['ts', 'js', 'tsx', 'jsx', 'mjs'].map(s => `**/*.${s}`)
-export default async function (config?: babelTaskConfigType): Promise<any> {
+export default function (config?: babelTaskConfigType) {
     const c = assign({}, GULP_TASK_DEFAULT_CONFIG, config)
     const dest = mergePath(c.root, c?.outputDir)
-    await createGulpTask({
+    return runGulpTask({
         src: scriptSrc,
         openSourcemap: c?.openCompress,
         cwd: mergePath(c.root, c?.workDir),
