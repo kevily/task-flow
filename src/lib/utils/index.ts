@@ -1,5 +1,6 @@
 import cp from 'child_process'
 import * as path from 'path'
+import * as fs from 'fs'
 
 export function onGenCommand(): 'yarn' | 'npm' {
     try {
@@ -20,4 +21,11 @@ export function resolvePackage(pkg) {
     } catch {
         return false
     }
+}
+
+export function requireFile(path) {
+    if (fs.existsSync(path)) {
+        return require(path)
+    }
+    return void 0
 }

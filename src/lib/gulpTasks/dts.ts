@@ -1,21 +1,27 @@
 import ts from 'gulp-typescript'
 import { GulpTaskConfigType } from '../GulpTaskEngine'
 import { scriptSrc } from './babel'
-import { mergePath } from '../utils'
+import { mergePath, requireFile } from '../utils'
 import { assign } from 'lodash'
 import { GULP_TASK_DEFAULT_CONFIG } from '../configs/defaultConfig'
 import runGulpTask from '../runGulpTask'
 
-export interface tsTaskConfigType extends GulpTaskConfigType {
+export interface dtsTaskConfigType extends GulpTaskConfigType {
     configFilePath?: string
+    dtsConfig?: ts.Settings
 }
-export const TS_DEFAULT_CONFIG: tsTaskConfigType = {
+export const DTS_DEFAULT_CONFIG: dtsTaskConfigType = {
     ...GULP_TASK_DEFAULT_CONFIG
 }
 
-export default function dtsTask(config?: tsTaskConfigType) {
-    const c = assign({}, TS_DEFAULT_CONFIG, config)
-    const configFilePath = c?.configFilePath || mergePath(c.root, 'tsconfig.json')
+export default function dtsTask(config?: dtsTaskConfigType) {
+    const c = assign({}, DTS_DEFAULT_CONFIG, config)
+    if (!c.dtsConfig) {
+        c.dtsConfig =
+            requireFile(c?.configFilePath || mergePath(c.root, 'tsconfig.json'))?.compilerOptions ||
+            {}
+    }
+
     const dest = mergePath(c.root, c?.outputDir)
     return runGulpTask({
         src: scriptSrc,
@@ -24,7 +30,20 @@ export default function dtsTask(config?: tsTaskConfigType) {
         dest: dest,
         task(task) {
             task = task.pipe(
-                ts.createProject(configFilePath)({
+                ts.createProject({
+                    module: 'ESNext',
+                    esModuleInterop: true,
+                    jsx: 'react',
+                    allowSyntheticDefaultImports: true,
+                    allowJs: true,
+                    target: 'es6',
+                    noImplicitAny: false,
+                    skipLibCheck: true,
+                    moduleResolution: 'node',
+                    sourceMap: false,
+                    declaration: true,
+                    ...c.dtsConfig
+                })({
                     error: error => {
                         throw new Error(error.message)
                     }
