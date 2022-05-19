@@ -56,31 +56,35 @@ export default class Task<EC extends { [key: string]: any }> {
     public getTaskNames() {
         return keys(this.tasks)
     }
-    public async run(c?: runConfigType): Promise<any> {
-        let running = ora()
-        try {
-            if (!isBoolean(c?.tip)) {
-                running = running.start(chalk.yellow(`${c?.tip || 'Task running...'}\n`))
-            }
-            const taskNames = isArray(c?.queue)
-                ? filter(c?.queue, name => has(this.tasks, name))
-                : this.getTaskNames()
-            if (size(taskNames) > 0) {
-                const callback = () => {
-                    c?.callback?.()
-                    running.succeed()
+    public run(c?: runConfigType): Promise<boolean> {
+        return new Promise<boolean>((resolve, reject) => {
+            let running = ora()
+            try {
+                if (!isBoolean(c?.tip)) {
+                    running = running.start(chalk.yellow(`${c?.tip || 'Task running...'}\n`))
                 }
-                const tasks = values(pick(this.tasks, taskNames))
-                if (c?.sync) {
-                    // @ts-ignore
-                    gulp.series(...tasks, callback)(gulp)
-                } else {
-                    // @ts-ignore
-                    gulp.series(gulp.parallel(...tasks), callback)(gulp)
+                const taskNames = isArray(c?.queue)
+                    ? filter(c?.queue, name => has(this.tasks, name))
+                    : this.getTaskNames()
+                if (size(taskNames) > 0) {
+                    const callback = () => {
+                        c?.callback?.()
+                        running.succeed()
+                        resolve(true)
+                    }
+                    const tasks = values(pick(this.tasks, taskNames))
+                    if (c?.sync) {
+                        // @ts-ignore
+                        gulp.series(...tasks, callback)(gulp)
+                    } else {
+                        // @ts-ignore
+                        gulp.series(gulp.parallel(...tasks), callback)(gulp)
+                    }
                 }
+            } catch (e) {
+                running.fail(e.message)
+                reject(e.message)
             }
-        } catch (e) {
-            running.fail(e.message)
-        }
+        })
     }
 }
