@@ -22,60 +22,70 @@ export interface cssTaskConfigType extends GulpTaskConfigType {
     lessExt?: '.less' | '.css'
 }
 
-export default async function (config?: cssTaskConfigType): Promise<any> {
-    const c = assign({}, GULP_TASK_DEFAULT_CONFIG, config)
-    const sassExt: cssTaskConfigType['sassExt'] = c?.sassExt || '.css'
-    const lessExt: cssTaskConfigType['lessExt'] = c?.lessExt || '.css'
-    const dest = mergePath(c.root, c?.outputDir)
-    const srcCwd = mergePath(c.root, c?.workDir)
-    const plugins = []
-    if (!c?.closeCompress) {
-        plugins.push(cssnano())
-    }
-    // sass
-    // ----------------------------------------------------------------------
-    function sassTask() {
-        return runGulpTask({
-            src: ['**/*.sass', '**/*.scss'],
-            cwd: srcCwd,
-            ignore: c?.ignore,
-            dest,
-            task(task) {
-                task = task.pipe(postcss(plugins, { parser: require('postcss-scss') }))
-                task = task.pipe(rename({ extname: sassExt }))
-                return task
+export default function (config?: cssTaskConfigType) {
+    return new Promise<boolean>((resolve, reject) => {
+        try {
+            const c = assign({}, GULP_TASK_DEFAULT_CONFIG, config)
+            const sassExt: cssTaskConfigType['sassExt'] = c?.sassExt || '.css'
+            const lessExt: cssTaskConfigType['lessExt'] = c?.lessExt || '.css'
+            const dest = mergePath(c.root, c?.outputDir)
+            const srcCwd = mergePath(c.root, c?.workDir)
+            const plugins = []
+            if (!c?.closeCompress) {
+                plugins.push(cssnano())
             }
-        })
-    }
-    // less
-    // ----------------------------------------------------------------------
-    function lessTask() {
-        return runGulpTask({
-            src: ['**/*.less'],
-            cwd: srcCwd,
-            ignore: c?.ignore,
-            dest,
-            task(task) {
-                task = task.pipe(postcss(plugins, { parser: require('postcss-less') }))
-                task = task.pipe(rename({ extname: lessExt }))
-                return task
+            // sass
+            // ----------------------------------------------------------------------
+            function sassTask() {
+                return runGulpTask({
+                    src: ['**/*.sass', '**/*.scss'],
+                    cwd: srcCwd,
+                    ignore: c?.ignore,
+                    dest,
+                    task(task) {
+                        task = task.pipe(postcss(plugins, { parser: require('postcss-scss') }))
+                        task = task.pipe(rename({ extname: sassExt }))
+                        return task
+                    }
+                })
             }
-        })
-    }
-    // postcss
-    // ----------------------------------------------------------------------
-    function postcssTask() {
-        return runGulpTask({
-            src: ['**/*.pcss', '**/*.css'],
-            cwd: srcCwd,
-            ignore: c?.ignore,
-            dest,
-            task(task) {
-                task = task.pipe(postcss(plugins))
-                task = task.pipe(rename({ extname: '.css' }))
-                return task
+            // less
+            // ----------------------------------------------------------------------
+            function lessTask() {
+                return runGulpTask({
+                    src: ['**/*.less'],
+                    cwd: srcCwd,
+                    ignore: c?.ignore,
+                    dest,
+                    task(task) {
+                        task = task.pipe(postcss(plugins, { parser: require('postcss-less') }))
+                        task = task.pipe(rename({ extname: lessExt }))
+                        return task
+                    }
+                })
             }
-        })
-    }
-    return gulp.series(sassTask, lessTask, postcssTask)
+            // postcss
+            // ----------------------------------------------------------------------
+            function postcssTask() {
+                return runGulpTask({
+                    src: ['**/*.pcss', '**/*.css'],
+                    cwd: srcCwd,
+                    ignore: c?.ignore,
+                    dest,
+                    task(task) {
+                        task = task.pipe(postcss(plugins))
+                        task = task.pipe(rename({ extname: '.css' }))
+                        return task
+                    }
+                })
+            }
+            function cb() {
+                resolve(true)
+            }
+            // @ts-ignore
+            gulp.series(sassTask, lessTask, postcssTask, cb)(gulp)
+        } catch (e) {
+            reject(e.message)
+        }
+    })
 }
