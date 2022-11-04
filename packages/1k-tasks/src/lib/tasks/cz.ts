@@ -20,5 +20,8 @@ export default async function cz(c: czConfigType) {
             isRun = false
         }
     }
-    isRun && spawnSync('cz')
+    const commandPath = resolvePackage('commitizen/bin/git-cz')
+    if (isRun && commandPath) {
+        spawnSync('node', [commandPath])
+    }
 }

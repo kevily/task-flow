@@ -1,0 +1,17 @@
+{
+    "name": "__test__",
+    "private": true,
+    "version": "1.0.1",
+    "main": "index.js",
+    "author": "kevily",
+    "license": "MIT",
+    "scripts": {
+        "start": "node ./start.js"
+    },
+    "dependencies": {
+        "1k-tasks": "workspace:*"
+    },
+    "devDependencies": {
+        "gulp": "^4.0.2"
+    }
+}
