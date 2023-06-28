@@ -1,6 +1,6 @@
 #!/usr/bin/env node
 
-import { dts, css, babel, createCz, cz, eslint, stylelint } from '../lib'
+import { dts, css, babel, createCz, cz, eslint, stylelint } from '../cjs'
 import commander = require('commander')
 import gulp = require('gulp')
 import ora = require('ora')

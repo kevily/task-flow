@@ -6,7 +6,7 @@ import fsExtra from 'fs-extra'
 import path from 'path'
 
 export interface tscConfigType extends EngineConfigType {}
-export default async function tsc(c: tscConfigType) {
+export default async function tsc(c?: tscConfigType) {
     const config: tscConfigType = assign({ root: process.cwd() }, c)
     const commandPath = resolvePackage('typescript/bin/tsc')
     const tsconfigPath = path.join(c.root, 'tsconfig.json')

@@ -1,8 +1,9 @@
 {
     "name": "1k-tasks",
-    "version": "3.0.1",
-    "main": "./lib/index.js",
-    "types": "./lib/index.d.ts",
+    "version": "3.0.2",
+    "main": "./cjs/index.js",
+    "module": "./es/index.js",
+    "types": "./es/index.d.ts",
     "repository": "https://github.com/kevily/task-flow",
     "author": "1k <bug_zero@163.com>",
     "license": "MIT",
@@ -12,13 +13,16 @@
     "scripts": {
         "start-bin": "tsc -p ./tsconfig.bin.json -w",
         "build-bin": "rimraf ./bin && tsc -p ./tsconfig.bin.json",
-        "start-task": "tsc -p ./tsconfig.task.json -w",
-        "build-task": "rimraf ./lib && tsc -p ./tsconfig.task.json",
-        "build": "pnpm run lint && pnpm run build-task && pnpm run build-bin",
+        "start-cjs": "tsc -p ./tsconfig.cjs.json -w",
+        "build-cjs": "rimraf ./cjs && tsc -p ./tsconfig.cjs.json",
+        "start-esm": "tsc -p ./tsconfig.esm.json -w",
+        "build-esm": "rimraf ./es && tsc -p ./tsconfig.esm.json",
+        "build": "pnpm run lint && pnpm run build-cjs &&  pnpm run build-esm && pnpm run build-bin",
         "lint": "eslint \"./src/**/*.{ts,js}\""
     },
     "files": [
-        "lib",
+        "cjs",
+        "es",
         "bin",
         "package.json"
     ],

@@ -4,6 +4,8 @@ logs
 /lib
 /bin
 /dist
+/cjs
+/es
 .vscode
 .idea
 .history

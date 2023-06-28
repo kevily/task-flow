@@ -7,7 +7,7 @@ import { EngineConfigType, taskType, runConfigType } from './types'
 
 export default class Task {
     protected config: EngineConfigType
-    protected tasks: { [key: string]: () => Promise<any> }
+    protected tasks: { [key: string]: () => Promise<any> | any }
     constructor(config?: EngineConfigType) {
         this.config = assign(GULP_TASK_DEFAULT_CONFIG, config)
         this.tasks = {}

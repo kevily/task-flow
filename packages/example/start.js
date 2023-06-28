@@ -1,15 +1,4 @@
-const {
-    dts,
-    css,
-    babel,
-    clear,
-    copy,
-    rollup,
-    Engine,
-    eslint,
-    stylelint,
-    tsc,
-} = require('1k-tasks/lib')
+const { dts, css, babel, clear, copy, rollup, Engine, eslint, stylelint, tsc } = require('1k-tasks')
 
 // Create gulpTask
 const gulpTask = new Engine()

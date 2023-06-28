@@ -1,6 +1,6 @@
 import { resolvePackage } from '../utils'
 import { spawnSync } from '../utils/spawnSync'
-import inquirer = require('inquirer')
+import inquirer from 'inquirer'
 import createCz, { createCzConfig } from './createCz'
 
 export interface czConfigType extends createCzConfig {}

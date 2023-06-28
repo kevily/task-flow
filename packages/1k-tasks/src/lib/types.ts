@@ -8,7 +8,7 @@ export interface EngineConfigType {
     outputDir?: string
 }
 
-export type taskType<C> = (c?: C) => Promise<any>
+export type taskType<C> = (c?: C) => Promise<any> | any
 export interface TaskConfigType<T, C> {
     name: string
     task: T
