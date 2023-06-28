@@ -3,12 +3,12 @@ import postcss from 'gulp-postcss'
 import rename from 'gulp-rename'
 import cssnano from 'cssnano'
 import runGulpTask from '../runGulpTask'
-import { GulpTaskConfigType } from '../GulpTaskEngine'
+import { EngineConfigType } from '../types'
 import { mergePath } from '../utils'
 import { assign } from 'lodash'
 import { GULP_TASK_DEFAULT_CONFIG } from '../configs/defaultConfig'
 
-export interface cssTaskConfigType extends GulpTaskConfigType {
+export interface cssTaskConfigType extends EngineConfigType {
     closeCompress?: boolean
     /**
      * @description output ext

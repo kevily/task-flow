@@ -25,6 +25,7 @@ importers:
       '@rollup/plugin-commonjs': 19.0.1
       '@rollup/plugin-node-resolve': 13.0.2
       '@rollup/plugin-url': 6.0.0
+      '@ronilaukkarinen/gulp-stylelint': ^14.1.1
       '@types/babel-core': 6.25.7
       '@types/fs-extra': 9.0.12
       '@types/gulp': 4.0.9
@@ -86,6 +87,7 @@ importers:
       '@rollup/plugin-commonjs': 19.0.1_rollup@2.53.3
       '@rollup/plugin-node-resolve': 13.0.2_rollup@2.53.3
       '@rollup/plugin-url': 6.0.0_rollup@2.53.3
+      '@ronilaukkarinen/gulp-stylelint': 14.1.1
       chalk: 4.1.1
       commander: 8.1.0
       commitizen: 4.2.4
@@ -2039,12 +2041,17 @@ packages:
     resolution: {integrity: sha512-F2msla3tad+Mfht5cJq7LSXcdudKTWCVYUgw6pLFOOHSTtZlj6SWNYAp+AhuqLmWdBO2X5hPrLcu8cVP8fy28w==}
     engines: {node: '>=6.0.0'}
     dev: false
-    optional: true
 
   /@jridgewell/sourcemap-codec/1.4.14:
     resolution: {integrity: sha512-XPSJHWmi394fuUuzDnGz1wiKqWfo1yXecHQMRf2l6hztTO+nPru658AyDngaBe7isIxEkRsPR3FZh+s7iVa4Uw==}
     dev: false
-    optional: true
+
+  /@jridgewell/trace-mapping/0.3.18:
+    resolution: {integrity: sha512-w+niJYzMHdd7USdiH2U6869nqhD2nbfZXND5Yp93qIbEmnDNk7PD48o+YchRVpzMU7M6jVCbenTR7PA1FLQ9pA==}
+    dependencies:
+      '@jridgewell/resolve-uri': 3.1.0
+      '@jridgewell/sourcemap-codec': 1.4.14
+    dev: false
 
   /@jridgewell/trace-mapping/0.3.9:
     resolution: {integrity: sha512-3Belt6tdc8bPgAtbcmdtNJlirVoTmEb5e2gC94PnkwEW9jI6CAHUeoG85tjWP5WquqfavoMtMwiG4P926ZKKuQ==}
@@ -2170,6 +2177,18 @@ packages:
     dependencies:
       estree-walker: 2.0.2
       picomatch: 2.3.0
+    dev: false
+
+  /@ronilaukkarinen/gulp-stylelint/14.1.1:
+    resolution: {integrity: sha512-3gXiYu0PkPTXs7l70V6zrHCy9O1KziMTKy9fcDho2KXiAxUcFeBaZ8Gw6Sz46Rj5vJTXMgrVd4fAoRHfxO3tBQ==}
+    engines: {node: ^12.20.0 || ^14.13.1 || >=15.14.0 || >=16.0.0}
+    peerDependencies:
+      stylelint: 10 - 15
+    dependencies:
+      '@jridgewell/trace-mapping': 0.3.18
+      ansi-colors: 4.1.3
+      fancy-log: 2.0.0
+      plugin-error: 2.0.1
     dev: false
 
   /@sinonjs/commons/1.8.3:
@@ -4749,6 +4768,13 @@ packages:
       parse-node-version: 1.0.1
       time-stamp: 1.1.0
 
+  /fancy-log/2.0.0:
+    resolution: {integrity: sha512-9CzxZbACXMUXW13tS0tI8XsGGmxWzO2DmYrGuBJOJ8k8q2K7hwfJA5qHjuPPe8wtsco33YR9wc+Rlr5wYFvhSA==}
+    engines: {node: '>=10.13.0'}
+    dependencies:
+      color-support: 1.1.3
+    dev: false
+
   /fast-deep-equal/3.1.3:
     resolution: {integrity: sha512-f3qQ9oQy9j2AhBe/H9VC91wLmKBCCU/gDOnKNAYG5hswO7BLKj09Hc5HYNz9cGI++xlpDCIgDaitVs03ATR84Q==}
 
@@ -5041,7 +5067,7 @@ packages:
     resolution: {integrity: sha512-oWb1Z6mkHIskLzEJ/XWX0srkpkTQ7vaopMQkyaEIoq0fmtFVxOthb8cCxeT+p3ynTdkk/RZwbgG4brR5BeWECw==}
     engines: {node: '>= 4.0'}
     os: [darwin]
-    deprecated: fsevents 1 will break on node v14+ and could be using insecure binaries. Upgrade to fsevents 2.
+    deprecated: The v1 package contains DANGEROUS / INSECURE binaries. Upgrade to safe fsevents v2
     requiresBuild: true
     dependencies:
       bindings: 1.5.0
@@ -7874,6 +7900,13 @@ packages:
       arr-diff: 4.0.0
       arr-union: 3.1.0
       extend-shallow: 3.0.2
+    dev: false
+
+  /plugin-error/2.0.1:
+    resolution: {integrity: sha512-zMakqvIDyY40xHOvzXka0kUvf40nYIuwRE8dWhti2WtjQZ31xAgBZBhxsK7vK3QbRXS1Xms/LO7B5cuAsfB2Gg==}
+    engines: {node: '>=10.13.0'}
+    dependencies:
+      ansi-colors: 1.1.0
     dev: false
 
   /pngjs-nozlib/1.0.0:

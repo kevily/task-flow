@@ -12,7 +12,7 @@
         "commit": "git add . && cz",
         "push": "pnpm run commit && git push",
         "login": "npm login --registry http://registry.npmjs.org",
-        "pub": "pnpm run changeVersion && pnpm run build && pnpm run test && pnpm run push && pnpm -r publish --registry https://registry.npmjs.org"
+        "pub": "pnpm run build && pnpm run test && pnpm run changeVersion && pnpm run push && pnpm -r publish --registry https://registry.npmjs.org"
     },
     "keywords": [],
     "author": "kevily",

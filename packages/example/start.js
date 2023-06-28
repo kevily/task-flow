@@ -5,21 +5,21 @@ const {
     clear,
     copy,
     rollup,
-    GulpTaskEngine,
+    Engine,
     eslint,
     stylelint,
     tsc,
 } = require('1k-tasks/lib')
 
 // Create gulpTask
-const gulpTask = new GulpTaskEngine()
+const gulpTask = new Engine()
 gulpTask.addInputIgnore(['**/ignore/**.*'])
 gulpTask.registry('dts', dts)
 gulpTask.registry('tsc', tsc)
 gulpTask.registry('babel', babel)
 gulpTask.registry('css', css)
 gulpTask.registry('copy', copy, {
-    files: ['**/copy/.prettier<>rc.js', '**/copy/.czrc', '**/copy/**/*.*'],
+    files: ['**/copy/.prettierrc.js', '**/copy/.czrc', '**/copy/**/*.*'],
 })
 gulpTask.registry('eslint', eslint)
 gulpTask.registry('stylelint', stylelint)

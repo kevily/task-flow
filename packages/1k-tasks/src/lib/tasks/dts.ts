@@ -1,12 +1,12 @@
 import ts from 'gulp-typescript'
-import { GulpTaskConfigType } from '../GulpTaskEngine'
+import { EngineConfigType } from '../types'
 import { scriptSrc } from './babel'
 import { mergePath, requireFile } from '../utils'
 import { assign } from 'lodash'
 import { GULP_TASK_DEFAULT_CONFIG } from '../configs/defaultConfig'
 import runGulpTask from '../runGulpTask'
 
-export interface dtsTaskConfigType extends GulpTaskConfigType {
+export interface dtsTaskConfigType extends EngineConfigType {
     configFilePath?: string
     dtsConfig?: ts.Settings
 }

@@ -1,47 +1,24 @@
 import * as gulp from 'gulp'
-import { isArray, assign, filter, isBoolean, keys, values, pick, has, size } from 'lodash'
+import { isArray, assign, filter, isBoolean, keys, values, pick, has, size, forEach } from 'lodash'
 import ora from 'ora'
 import chalk from 'chalk'
+import { GULP_TASK_DEFAULT_CONFIG } from './configs'
+import { EngineConfigType, taskType, runConfigType } from './types'
 
-export interface EngineConfigType {
-    root?: string
-    /**
-     * @description Task work dir.
-     */
-    workDir?: string
-}
-
-export type taskType<C> = (c?: C) => Promise<any>
-export interface TaskConfigType<T, C> {
-    name: string
-    task: T
-    config?: C
-}
-export interface runConfigType {
-    sync?: boolean
-    queue?: string[]
-    /**
-     * @description If set to false, it is not displayed
-     */
-    tip?: string | boolean
-    callback?: () => Promise<any>
-}
-
-export default class Task<EC extends { [key: string]: any }> {
-    protected config: EngineConfigType & EC
+export default class Task {
+    protected config: EngineConfigType
     protected tasks: { [key: string]: () => Promise<any> }
-    constructor(config?: EngineConfigType & EC) {
-        this.config = assign(
-            {
-                root: process.cwd(),
-                workDir: 'src'
-            },
-            config
-        )
+    constructor(config?: EngineConfigType) {
+        this.config = assign(GULP_TASK_DEFAULT_CONFIG, config)
         this.tasks = {}
 
         this.getTaskNames = this.getTaskNames.bind(this)
         this.run = this.run.bind(this)
+    }
+    public addInputIgnore(igore: EngineConfigType['ignore']): void {
+        forEach(igore, str => {
+            this.config.ignore.push(str)
+        })
     }
     public setConfig(c?: EngineConfigType) {
         assign(this.config, c)

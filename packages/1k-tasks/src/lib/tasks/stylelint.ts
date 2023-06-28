@@ -1,6 +1,6 @@
 import { spawnSync } from '../utils/spawnSync'
 import { resolvePackage } from '../utils'
-import { EngineConfigType } from '../Engine'
+import { EngineConfigType } from '../types'
 import { assign } from 'lodash'
 
 export interface stylelintConfigType extends EngineConfigType {}

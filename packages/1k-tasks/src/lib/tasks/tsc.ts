@@ -1,6 +1,6 @@
 import { resolvePackage } from '../utils'
 import { spawnSync } from '../utils/spawnSync'
-import { EngineConfigType } from '../Engine'
+import { EngineConfigType } from '../types'
 import { assign } from 'lodash'
 import fsExtra from 'fs-extra'
 import path from 'path'

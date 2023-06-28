@@ -1,12 +1,12 @@
 import runGulpTask from '../runGulpTask'
-import { GulpTaskConfigType } from '../GulpTaskEngine'
+import { EngineConfigType } from '../types'
 import spritesmith from 'gulp.spritesmith'
 import filterFile from 'gulp-filter'
 import { mergePath } from '../utils'
 import { assign } from 'lodash'
 import { GULP_TASK_DEFAULT_CONFIG } from '../configs/defaultConfig'
 
-export interface imageSpritesConfigType extends GulpTaskConfigType {
+export interface imageSpritesConfigType extends EngineConfigType {
     /**
      * @description unit -> KB，if set to 0, there is no limit。
      * @default 10

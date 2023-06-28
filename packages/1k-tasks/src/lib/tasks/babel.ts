@@ -1,4 +1,4 @@
-import { GulpTaskConfigType } from '../GulpTaskEngine'
+import { EngineConfigType } from '../types'
 import runGulpTask from '../runGulpTask'
 import { mergePath } from '../utils'
 import babel from 'gulp-babel'
@@ -6,7 +6,7 @@ import terser from 'gulp-terser'
 import { assign } from 'lodash'
 import { GULP_TASK_DEFAULT_CONFIG } from '../configs/defaultConfig'
 
-export interface babelTaskConfigType extends GulpTaskConfigType {
+export interface babelTaskConfigType extends EngineConfigType {
     openSourcemap?: boolean
     openCompress?: boolean
     presets?: Array<any>

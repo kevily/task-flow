@@ -1,5 +1,0 @@
-export { default as babel } from './babel'
-export { default as dts } from './dts'
-export { default as copy } from './copy'
-export { default as css } from './css'
-export { default as imageSprites } from './imageSprites'

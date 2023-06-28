@@ -1,10 +1,10 @@
-import { GulpTaskConfigType } from '../GulpTaskEngine'
+import { EngineConfigType } from '../types'
 import runGulpTask, { runGulpTaskArgType } from '../runGulpTask'
 import { mergePath } from '../utils'
 import { assign } from 'lodash'
 import { GULP_TASK_DEFAULT_CONFIG } from '../configs/defaultConfig'
 
-export interface copyTaskConfigType extends GulpTaskConfigType {
+export interface copyTaskConfigType extends EngineConfigType {
     files: runGulpTaskArgType['src']
 }
 

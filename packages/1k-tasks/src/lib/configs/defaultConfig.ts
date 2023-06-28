@@ -1,18 +1,9 @@
-import { GulpTaskConfigType } from '../GulpTaskEngine'
-import { rollupConfigType } from '../tasks/rollup'
+import { EngineConfigType } from '../types'
 
 export const root = process.cwd()
-export const GULP_TASK_DEFAULT_CONFIG: GulpTaskConfigType = {
+export const GULP_TASK_DEFAULT_CONFIG: EngineConfigType = {
     workDir: 'src',
     root,
     ignore: ['**/node_modules/**/*.*', '**/__tests__/**/*.*'],
     outputDir: 'dist'
-}
-
-export const ROLLUP_DEFAULT_CONFIG: rollupConfigType = {
-    root,
-    workDir: 'src',
-    outputDir: 'dist',
-    input: 'index.ts',
-    formats: ['esm', 'cjs']
 }

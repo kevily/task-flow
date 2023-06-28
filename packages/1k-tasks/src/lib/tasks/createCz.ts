@@ -1,6 +1,6 @@
 import * as fsExtra from 'fs-extra'
 import { onGenCommand, resolvePackage } from '../utils'
-import { EngineConfigType } from '../Engine'
+import { EngineConfigType } from '../types'
 import { spawnSync } from '../utils/spawnSync'
 import { assign, size } from 'lodash'
 import * as path from 'path'
