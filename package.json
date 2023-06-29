@@ -6,7 +6,7 @@
     "main": "index.js",
     "scripts": {
         "build": "pnpm --filter=1k-tasks run build",
-        "test": "pnpm i && pnpm --filter=__test__ run start",
+        "test": "pnpm build && pnpm i && pnpm --filter=__test__ run start",
         "changeVersion": "pnpm changeset && pnpm changeset version && pnpm run clear:changelog",
         "clear:changelog": "pnpm -r exec rimraf CHANGELOG.md",
         "commit": "git add . && cz",
