@@ -33,7 +33,7 @@ export interface rollupConfigType extends EngineConfigType {
 }
 const extensions: Record<rollupConfigType['projectType'], string[]> = {
     ts: ['.json', '.js', '.ts'],
-    react: ['.json', '.js', '.ts', 'tsx', 'jsx']
+    react: ['.json', '.js', '.ts', '.tsx', '.jsx']
 }
 
 function createDefaultConfig(): rollupConfigType {
@@ -107,7 +107,7 @@ function genInput(c: rollupConfigType) {
     return run(c.input)
 }
 
-async function rollupTask(config?: rollupConfigType): Promise<any> {
+async function rollupTask(config?: rollupConfigType): Promise<void> {
     const c = assign({}, createDefaultConfig(), config)
     const bundle = await rollup({
         input: genInput(c),
