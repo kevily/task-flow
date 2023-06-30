@@ -5,11 +5,16 @@ import commonjs from '@rollup/plugin-commonjs'
 import url from '@rollup/plugin-url'
 import svgr from '@svgr/rollup'
 import { DEFAULT_EXTENSIONS } from '@babel/core'
-import { assign, forEach, isArray, isObject, map } from 'lodash'
+import { assign, concat, forEach, isArray, isObject, isString, map, reduce } from 'lodash'
 import { mergePath } from '../utils'
 import { EngineConfigType } from '../types'
+import { globSync } from 'glob'
 
 export interface rollupConfigType extends EngineConfigType {
+    /**
+     * string/array -> globs
+     * obj -> path
+     */
     input?: RollupOptions['input']
     /**
      * @default dist
@@ -42,24 +47,28 @@ function createDefaultConfig(): rollupConfigType {
     }
 }
 
-function genInput(workDir: rollupConfigType['workDir'], input: rollupConfigType['input']) {
-    if (isArray(input)) {
-        return map(input, input => genInput(workDir, input))
-    }
-    if (isObject(input)) {
-        const newInput: { [entryAlias: string]: string } = {}
-        forEach(input, (input, k) => {
-            newInput[k] = genInput(workDir, input)
+function genInput(c: rollupConfigType) {
+    function run(input: rollupConfigType['input']) {
+        if (isObject(c.input) && !isArray()) {
+            const newInput: { [entryAlias: string]: string } = {}
+            forEach(c.input as Record<string, string>, (input, k) => {
+                newInput[k] = mergePath(c.workDir, input)
+            })
+            return newInput
+        }
+        input = map(isString(input) ? [input] : (input as string[]), input => {
+            return mergePath(c.workDir, input)
         })
-        return newInput
+        return globSync(input, { ignore: c.ignore })
     }
-    return mergePath(workDir, input as string)
+
+    return run(c.input)
 }
 
 async function rollupTask(config?: rollupConfigType): Promise<any> {
     const c = assign({}, createDefaultConfig(), config)
     const bundle = await rollup({
-        input: genInput(c.workDir, c.input),
+        input: genInput(c),
         plugins: c.plugin.overwrite
             ? c.plugin.plugins
             : [

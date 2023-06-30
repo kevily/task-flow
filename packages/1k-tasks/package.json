@@ -1,6 +1,6 @@
 {
     "name": "1k-tasks",
-    "version": "3.2.1",
+    "version": "3.3.0",
     "main": "./cjs/index.js",
     "module": "./es/index.js",
     "types": "./es/index.d.ts",
@@ -45,6 +45,7 @@
         "cz-adapter-eslint": "0.3.0",
         "eslint": "7.31.0",
         "fs-extra": "10.0.0",
+        "glob": "10.3.1",
         "gulp": "4.0.2",
         "gulp-babel": "8.0.0",
         "gulp-clean": "0.4.0",
