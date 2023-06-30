@@ -5,23 +5,22 @@ import commonjs from '@rollup/plugin-commonjs'
 import url from '@rollup/plugin-url'
 import svgr from '@svgr/rollup'
 import { DEFAULT_EXTENSIONS } from '@babel/core'
-import * as path from 'path'
-import { assign } from 'lodash'
+import { assign, forEach, isArray, isObject, map } from 'lodash'
 import { mergePath } from '../utils'
 import { EngineConfigType } from '../types'
 
 export interface rollupConfigType extends EngineConfigType {
-    input?: string
+    input?: RollupOptions['input']
     /**
      * @default dist
      */
-    outputDir?: string
+    outputDir?: OutputOptions['dir']
     plugin?: {
         plugins: Plugin[]
         overwrite: boolean
     }
     inputOptions?: Omit<RollupOptions, 'input'>
-    outputOptions?: Omit<OutputOptions, 'file' | 'plugins'>
+    outputOptions?: Omit<OutputOptions, 'plugins' | 'dir'>
 }
 
 function createDefaultConfig(): rollupConfigType {
@@ -43,12 +42,24 @@ function createDefaultConfig(): rollupConfigType {
     }
 }
 
+function genInput(workDir: rollupConfigType['workDir'], input: rollupConfigType['input']) {
+    if (isArray(input)) {
+        return map(input, input => genInput(workDir, input))
+    }
+    if (isObject(input)) {
+        const newInput: { [entryAlias: string]: string } = {}
+        forEach(input, (input, k) => {
+            newInput[k] = genInput(workDir, input)
+        })
+        return newInput
+    }
+    return mergePath(workDir, input as string)
+}
+
 async function rollupTask(config?: rollupConfigType): Promise<any> {
     const c = assign({}, createDefaultConfig(), config)
-    const srcPath = mergePath(c.workDir, c.input)
-    const srcPathInfo = path.parse(srcPath)
     const bundle = await rollup({
-        input: mergePath(c.root, srcPath),
+        input: genInput(c.workDir, c.input),
         plugins: c.plugin.overwrite
             ? c.plugin.plugins
             : [
@@ -61,9 +72,8 @@ async function rollupTask(config?: rollupConfigType): Promise<any> {
               ],
         ...c.inputOptions
     })
-    const output = mergePath(c.root, c?.outputDir)
     await bundle.write({
-        file: mergePath(output, `${srcPathInfo.name}.${c.outputOptions.format}.js`),
+        dir: mergePath(c.root, c?.outputDir),
         ...c.outputOptions
     })
     await bundle.close()
