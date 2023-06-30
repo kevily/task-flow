@@ -1,6 +1,6 @@
 #!/usr/bin/env node
 
-import { dts, css, babel, createCz, cz, eslint, stylelint } from '../cjs'
+import { style, babel, createCz, cz, eslint, stylelint } from '../cjs'
 import commander = require('commander')
 import gulp = require('gulp')
 import ora = require('ora')
@@ -22,9 +22,11 @@ registry('createCz', 'crate cz config', async () => {
 })
 registry('eslint', 'eslint', eslint)
 registry('stylelint', 'stylelint', stylelint)
-registry('dts', 'Generate .d.ts', dts)
 registry('babel', 'Use babel to build(js,ts)', babel)
-registry('css', 'Build css,scss,pcss,less', css)
+registry('css', 'Build css', style)
+registry('scss', 'Build scss', () => style({ parser: 'scss' }))
+registry('less', 'Build less', () => style({ parser: 'less' }))
+registry('pcss', 'Build postcss', () => style({ parser: 'postcss' }))
 registry('cz', 'Use cz', cz)
 
 program.parse(process.argv)

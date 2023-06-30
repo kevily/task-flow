@@ -11,6 +11,7 @@
         "declaration": true,
         "outDir": "dist",
         "baseUrl": ".",
+        "jsx": "react-jsx",
         "emitDeclarationOnly": true
     },
     "include": ["src/**/*"],

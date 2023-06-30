@@ -1,12 +1,15 @@
-const { dts, css, babel, clear, copy, rollup, Engine, eslint, stylelint, tsc } = require('1k-tasks')
+const { style, babel, clear, copy, rollup, Engine, eslint, stylelint, tsc } = require('1k-tasks')
 const path = require('path')
 
-const task = new Engine({ root: path.join(process.cwd(), 'pkg') })
+const root = path.join(process.cwd(), 'pkg')
+const task = new Engine({ root })
 task.addInputIgnore(['**/ignore/**.*'])
-task.registry('dts', dts)
 task.registry('tsc', tsc)
 task.registry('babel', babel)
-task.registry('css', css)
+task.registry('css', style, { parser: 'css' })
+task.registry('scss', style, { parser: 'scss' })
+task.registry('less', style, { parser: 'less' })
+task.registry('postcss', style, { parser: 'postcss' })
 task.registry('copy', copy, {
     files: ['**/copy/.prettierrc.js', '**/copy/.czrc', '**/copy/**/*.*'],
 })
@@ -23,10 +26,11 @@ task.registry('rollup', rollup, {
 
 task.run({
     sync: true,
-    queue: ['clear', 'rollup'],
+    queue: ['clear', 'css', 'scss', 'less', 'postcss', 'tsc', 'rollup'],
     tip: 'build: default...\n',
 })
 
+// style({ root, parse: 'postcss', ignore: ['**/ignore/**.*'] })
 // rollup({
 //     ...rollup.REACT_CONFIG,
 //     root: path.join(process.cwd(), 'pkg'),

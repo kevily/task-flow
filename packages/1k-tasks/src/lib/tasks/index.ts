@@ -1,7 +1,6 @@
 export { default as babel } from './babel'
-export { default as dts } from './dts'
 export { default as copy } from './copy'
-export { default as css } from './css'
+export { default as style } from './style'
 export { default as imageSprites } from './imageSprites'
 export { default as clear } from './clear'
 export { default as createCz } from './createCz'
