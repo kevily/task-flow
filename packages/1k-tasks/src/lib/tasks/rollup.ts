@@ -2,7 +2,6 @@ import { rollup, OutputOptions, RollupOptions, Plugin } from 'rollup'
 import { nodeResolve } from '@rollup/plugin-node-resolve'
 import babel, { RollupBabelInputPluginOptions } from '@rollup/plugin-babel'
 import commonjs from '@rollup/plugin-commonjs'
-import typescipts from '@rollup/plugin-typescript'
 import url from '@rollup/plugin-url'
 import svgr from '@svgr/rollup'
 import { DEFAULT_EXTENSIONS } from '@babel/core'
@@ -53,21 +52,16 @@ function createDefaultConfig(): rollupConfigType {
         }
     }
 }
-function createTsPlugin(c: rollupConfigType) {
-    return typescipts({
-        sourceMap: false,
-        tsconfig: path.join(c.root, 'tsconfig.json'),
-        declaration: false
-    })
-}
 function createBabelPlugin(c: rollupConfigType) {
     const options: RollupBabelInputPluginOptions = {
         extensions: [...DEFAULT_EXTENSIONS, '.ts'],
         babelHelpers: 'bundled',
-        exclude: /node_modules/
+        exclude: /node_modules/,
+        presets: [require.resolve('@babel/preset-env'), require.resolve('@babel/preset-typescript')]
     }
     if (c.projectType === 'react') {
         options.extensions.push(...['tsx', 'jsx'])
+        options.presets.push(require.resolve('@babel/preset-react'))
     }
     return babel(options)
 }
@@ -75,7 +69,7 @@ const DEFAULT_PLUGINS: Record<
     rollupConfigType['projectType'],
     (c: rollupConfigType) => rollupConfigType['plugin']['plugins']
 > = {
-    ts: c => [createBabelPlugin(c), createTsPlugin(c)],
+    ts: c => [createBabelPlugin(c)],
     react: c => [
         url({
             limit: 10000 // 10kB
@@ -85,8 +79,7 @@ const DEFAULT_PLUGINS: Record<
             titleProp: true,
             ref: true
         }),
-        createBabelPlugin(c),
-        createTsPlugin(c)
+        createBabelPlugin(c)
     ]
 }
 

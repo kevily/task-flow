@@ -1,6 +1,6 @@
 {
     "name": "1k-tasks",
-    "version": "3.4.1",
+    "version": "3.4.2",
     "main": "./cjs/index.js",
     "module": "./es/index.js",
     "types": "./es/index.d.ts",
@@ -35,7 +35,6 @@
         "@rollup/plugin-babel": "6.0.3",
         "@rollup/plugin-commonjs": "25.0.2",
         "@rollup/plugin-node-resolve": "15.1.0",
-        "@rollup/plugin-typescript": "11.1.2",
         "@rollup/plugin-url": "8.0.1",
         "@svgr/rollup": "8.0.1",
         "chalk": "4.1.1",
