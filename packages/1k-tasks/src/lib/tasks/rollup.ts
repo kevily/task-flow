@@ -5,10 +5,11 @@ import commonjs from '@rollup/plugin-commonjs'
 import url from '@rollup/plugin-url'
 import svgr from '@svgr/rollup'
 import { DEFAULT_EXTENSIONS } from '@babel/core'
-import { assign, concat, forEach, isArray, isObject, isString, map, reduce } from 'lodash'
+import { assign, forEach, isArray, isObject, isString, map, omit } from 'lodash'
 import { mergePath } from '../utils'
 import { EngineConfigType } from '../types'
 import { globSync } from 'glob'
+import * as path from 'path'
 
 export interface rollupConfigType extends EngineConfigType {
     /**
@@ -48,16 +49,19 @@ function createDefaultConfig(): rollupConfigType {
 }
 
 function genInput(c: rollupConfigType) {
+    function relativePath(workDir: rollupConfigType['workDir']) {
+        return path.relative(process.cwd(), path.join(c.root, workDir))
+    }
     function run(input: rollupConfigType['input']) {
         if (isObject(c.input) && !isArray()) {
             const newInput: { [entryAlias: string]: string } = {}
             forEach(c.input as Record<string, string>, (input, k) => {
-                newInput[k] = mergePath(c.workDir, input)
+                newInput[k] = mergePath(relativePath(c.workDir), input)
             })
             return newInput
         }
         input = map(isString(input) ? [input] : (input as string[]), input => {
-            return mergePath(c.workDir, input)
+            return mergePath(relativePath(c.workDir), input)
         })
         return globSync(input, { ignore: c.ignore })
     }
@@ -88,23 +92,22 @@ async function rollupTask(config?: rollupConfigType): Promise<any> {
     await bundle.close()
 }
 
-rollupTask.DEFAULT_CONFIG = createDefaultConfig()
-
-rollupTask.REACT_CONFIG = (() => {
-    const config = createDefaultConfig()
-    config.plugin.plugins = [
-        svgr({
-            svgo: false,
-            titleProp: true,
-            ref: true
-        }),
-        babel({
-            extensions: [...DEFAULT_EXTENSIONS, '.ts', 'tsx'],
-            babelHelpers: 'bundled',
-            exclude: /node_modules/
-        })
-    ]
-    return config
-})()
+rollupTask.REACT_CONFIG = {
+    plugin: {
+        plugins: [
+            svgr({
+                svgo: false,
+                titleProp: true,
+                ref: true
+            }),
+            babel({
+                extensions: [...DEFAULT_EXTENSIONS, '.ts', 'tsx'],
+                babelHelpers: 'bundled',
+                exclude: /node_modules/
+            })
+        ],
+        overwrite: false
+    }
+} as rollupConfigType
 
 export default rollupTask

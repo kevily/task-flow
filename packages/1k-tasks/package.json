@@ -1,6 +1,6 @@
 {
     "name": "1k-tasks",
-    "version": "3.3.0",
+    "version": "3.3.1",
     "main": "./cjs/index.js",
     "module": "./es/index.js",
     "types": "./es/index.d.ts",
@@ -18,8 +18,7 @@
         "start-esm": "tsc -p ./tsconfig.esm.json -w",
         "build-esm": "rimraf ./es && tsc -p ./tsconfig.esm.json",
         "build": "pnpm run lint && pnpm run build-cjs &&  pnpm run build-esm && pnpm run build-bin",
-        "lint": "eslint \"./src/**/*.{ts,js}\"",
-        "test": "ts-node ./test"
+        "lint": "eslint \"./src/**/*.{ts,js}\""
     },
     "files": [
         "cjs",

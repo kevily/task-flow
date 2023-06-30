@@ -1,7 +1,7 @@
 const { dts, css, babel, clear, copy, rollup, Engine, eslint, stylelint, tsc } = require('1k-tasks')
+const path = require('path')
 
-// Create gulpTask
-const task = new Engine()
+const task = new Engine({ root: path.join(process.cwd(), 'pkg') })
 task.addInputIgnore(['**/ignore/**.*'])
 task.registry('dts', dts)
 task.registry('tsc', tsc)
@@ -21,7 +21,8 @@ task.registry('clear', clear, {
 })
 task.registry('rollup', rollup, {
     ...rollup.REACT_CONFIG,
-    outputDir: 'dist/rollupTask',
+    outputDir: 'dist',
+    input: '**/*.{ts,tsx}',
 })
 
 task.run({
@@ -29,3 +30,10 @@ task.run({
     queue: ['dts', 'rollup'],
     tip: 'build: default...\n',
 })
+
+// rollup({
+//     ...rollup.REACT_CONFIG,
+//     root: path.join(process.cwd(), 'pkg'),
+//     outputDir: 'dist',
+//     input: '**/*.{ts,tsx}',
+// })
