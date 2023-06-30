@@ -5,6 +5,7 @@ import { mergePath, requireFile } from '../utils'
 import { assign } from 'lodash'
 import { GULP_TASK_DEFAULT_CONFIG } from '../configs/defaultConfig'
 import runGulpTask from '../runGulpTask'
+import { join } from 'path'
 
 export interface dtsTaskConfigType extends EngineConfigType {
     configFilePath?: string
@@ -16,11 +17,6 @@ export const DTS_DEFAULT_CONFIG: dtsTaskConfigType = {
 
 export default function dtsTask(config?: dtsTaskConfigType) {
     const c = assign({}, DTS_DEFAULT_CONFIG, config)
-    if (!c.dtsConfig) {
-        c.dtsConfig =
-            requireFile(c?.configFilePath || mergePath(c.root, 'tsconfig.json'))?.compilerOptions ||
-            {}
-    }
 
     const dest = mergePath(c.root, c?.outputDir)
     return runGulpTask({
@@ -30,18 +26,8 @@ export default function dtsTask(config?: dtsTaskConfigType) {
         dest: dest,
         task(task) {
             task = task.pipe(
-                ts.createProject({
-                    module: 'ESNext',
-                    esModuleInterop: true,
-                    jsx: 'react',
-                    allowSyntheticDefaultImports: true,
-                    allowJs: true,
-                    target: 'es6',
-                    noImplicitAny: false,
-                    skipLibCheck: true,
-                    moduleResolution: 'node',
-                    sourceMap: false,
-                    declaration: true,
+                ts.createProject(c?.configFilePath || join(c.root, 'tsconfig.json'), {
+                    emitDeclarationOnly: true,
                     ...c.dtsConfig
                 })({
                     error: error => {

@@ -9,7 +9,7 @@ export interface tscConfigType extends EngineConfigType {}
 export default async function tsc(c?: tscConfigType) {
     const config: tscConfigType = assign({ root: process.cwd() }, c)
     const commandPath = resolvePackage('typescript/bin/tsc')
-    const tsconfigPath = path.join(c.root, 'tsconfig.json')
+    const tsconfigPath = path.join(config.root, 'tsconfig.json')
     const hasTsConfig = fsExtra.existsSync(tsconfigPath)
     if (!hasTsConfig) {
         throw new Error(`The '${tsconfigPath}' is not exists!`)
