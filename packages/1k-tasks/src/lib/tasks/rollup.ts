@@ -4,7 +4,6 @@ import babel, { RollupBabelInputPluginOptions } from '@rollup/plugin-babel'
 import commonjs from '@rollup/plugin-commonjs'
 import url from '@rollup/plugin-url'
 import svgr from '@svgr/rollup'
-import { DEFAULT_EXTENSIONS } from '@babel/core'
 import { assign, forEach, isArray, isObject, isString, map } from 'lodash'
 import { mergePath } from '../utils'
 import { EngineConfigType } from '../types'
@@ -32,6 +31,10 @@ export interface rollupConfigType extends EngineConfigType {
     inputOptions?: Omit<RollupOptions, 'input'>
     outputOptions?: Omit<OutputOptions, 'plugins' | 'dir'>
 }
+const extensions: Record<rollupConfigType['projectType'], string[]> = {
+    ts: ['.json', '.js', '.ts'],
+    react: ['.json', '.js', '.ts', 'tsx', 'jsx']
+}
 
 function createDefaultConfig(): rollupConfigType {
     return {
@@ -54,13 +57,13 @@ function createDefaultConfig(): rollupConfigType {
 }
 function createBabelPlugin(c: rollupConfigType) {
     const options: RollupBabelInputPluginOptions = {
-        extensions: [...DEFAULT_EXTENSIONS, '.ts'],
+        extensions: extensions.ts,
         babelHelpers: 'bundled',
         exclude: /node_modules/,
         presets: [require.resolve('@babel/preset-env'), require.resolve('@babel/preset-typescript')]
     }
     if (c.projectType === 'react') {
-        options.extensions.push(...['tsx', 'jsx'])
+        options.extensions = extensions.react
         options.presets.push(require.resolve('@babel/preset-react'))
     }
     return babel(options)
@@ -111,7 +114,7 @@ async function rollupTask(config?: rollupConfigType): Promise<any> {
         plugins: c.plugin.overwrite
             ? c.plugin.plugins
             : [
-                  nodeResolve(),
+                  nodeResolve({ extensions: extensions[c.projectType] }),
                   commonjs(),
                   ...DEFAULT_PLUGINS[c.projectType](c),
                   ...c.plugin.plugins
@@ -120,6 +123,7 @@ async function rollupTask(config?: rollupConfigType): Promise<any> {
     })
     await bundle.write({
         dir: mergePath(c.root, c?.outputDir),
+        preserveModules: true,
         ...c.outputOptions
     })
     await bundle.close()

@@ -1,3 +1,4 @@
+import { test } from './test'
 import './index.scss'
 
 export class Test {
@@ -5,3 +6,4 @@ export class Test {
         console.log('1', 1)
     }
 }
+test()
