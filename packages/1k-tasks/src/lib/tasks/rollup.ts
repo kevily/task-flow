@@ -2,6 +2,8 @@ import { rollup, OutputOptions, RollupOptions, Plugin } from 'rollup'
 import { nodeResolve } from '@rollup/plugin-node-resolve'
 import babel from '@rollup/plugin-babel'
 import commonjs from '@rollup/plugin-commonjs'
+import url from '@rollup/plugin-url'
+import svgr from '@svgr/rollup'
 import { DEFAULT_EXTENSIONS } from '@babel/core'
 import * as path from 'path'
 import { assign } from 'lodash'
@@ -16,44 +18,44 @@ export interface rollupConfigType extends EngineConfigType {
     outputDir?: string
     plugin?: {
         plugins: Plugin[]
-        reset: boolean
+        overwrite: boolean
     }
     inputOptions?: Omit<RollupOptions, 'input'>
     outputOptions?: Omit<OutputOptions, 'file' | 'plugins'>
 }
 
-export const ROLLUP_DEFAULT_CONFIG: rollupConfigType = {
-    root: process.cwd(),
-    workDir: 'src',
-    outputDir: 'dist',
-    input: 'index.ts',
-    plugin: {
-        plugins: [],
-        reset: false
-    },
-    inputOptions: {
-        external: [/\.(scss|less|css)$/, /node_modules/]
-    },
-    outputOptions: {
-        format: 'esm'
+function createDefaultConfig(): rollupConfigType {
+    return {
+        root: process.cwd(),
+        workDir: 'src',
+        outputDir: 'dist',
+        input: 'index.ts',
+        plugin: {
+            plugins: [],
+            overwrite: false
+        },
+        inputOptions: {
+            external: [/\.(scss|less|css)$/, /node_modules/]
+        },
+        outputOptions: {
+            format: 'esm'
+        }
     }
 }
 
-export default async function rollupTask(config?: rollupConfigType): Promise<any> {
-    const c = assign({}, ROLLUP_DEFAULT_CONFIG, config)
+async function rollupTask(config?: rollupConfigType): Promise<any> {
+    const c = assign({}, createDefaultConfig(), config)
     const srcPath = mergePath(c.workDir, c.input)
     const srcPathInfo = path.parse(srcPath)
     const bundle = await rollup({
         input: mergePath(c.root, srcPath),
-        plugins: c.plugin.reset
+        plugins: c.plugin.overwrite
             ? c.plugin.plugins
             : [
                   nodeResolve(),
                   commonjs(),
-                  babel({
-                      extensions: [...DEFAULT_EXTENSIONS, '.ts', 'tsx'],
-                      babelHelpers: 'bundled',
-                      exclude: /node_modules/
+                  url({
+                      limit: 10000 // 10kB
                   }),
                   ...c.plugin.plugins
               ],
@@ -66,3 +68,24 @@ export default async function rollupTask(config?: rollupConfigType): Promise<any
     })
     await bundle.close()
 }
+
+rollupTask.DEFAULT_CONFIG = createDefaultConfig()
+
+rollupTask.REACT_CONFIG = (() => {
+    const config = createDefaultConfig()
+    config.plugin.plugins = [
+        svgr({
+            svgo: false,
+            titleProp: true,
+            ref: true
+        }),
+        babel({
+            extensions: [...DEFAULT_EXTENSIONS, '.ts', 'tsx'],
+            babelHelpers: 'bundled',
+            exclude: /node_modules/
+        })
+    ]
+    return config
+})()
+
+export default rollupTask

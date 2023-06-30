@@ -20,6 +20,7 @@ task.registry('clear', clear, {
     root: __dirname,
 })
 task.registry('rollup', rollup, {
+    ...rollup.REACT_CONFIG,
     outputDir: 'dist/rollupTask',
 })
 
