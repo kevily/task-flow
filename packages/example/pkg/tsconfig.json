@@ -9,7 +9,7 @@
         "moduleResolution": "node",
         "sourceMap": false,
         "declaration": true,
-        "outDir": "types",
+        "outDir": "dist",
         "baseUrl": ".",
         "emitDeclarationOnly": true
     },

@@ -1,17 +1,22 @@
 import { rollup, OutputOptions, RollupOptions, Plugin } from 'rollup'
 import { nodeResolve } from '@rollup/plugin-node-resolve'
-import babel from '@rollup/plugin-babel'
+import babel, { RollupBabelInputPluginOptions } from '@rollup/plugin-babel'
 import commonjs from '@rollup/plugin-commonjs'
+import typescipts from '@rollup/plugin-typescript'
 import url from '@rollup/plugin-url'
 import svgr from '@svgr/rollup'
 import { DEFAULT_EXTENSIONS } from '@babel/core'
-import { assign, forEach, isArray, isObject, isString, map, omit } from 'lodash'
+import { assign, forEach, isArray, isObject, isString, map } from 'lodash'
 import { mergePath } from '../utils'
 import { EngineConfigType } from '../types'
 import { globSync } from 'glob'
 import * as path from 'path'
 
 export interface rollupConfigType extends EngineConfigType {
+    /**
+     * @default ts
+     */
+    projectType?: 'ts' | 'react'
     /**
      * string/array -> globs
      * obj -> path
@@ -32,6 +37,7 @@ export interface rollupConfigType extends EngineConfigType {
 function createDefaultConfig(): rollupConfigType {
     return {
         root: process.cwd(),
+        projectType: 'ts',
         workDir: 'src',
         outputDir: 'dist',
         input: 'index.ts',
@@ -46,6 +52,42 @@ function createDefaultConfig(): rollupConfigType {
             format: 'esm'
         }
     }
+}
+function createTsPlugin(c: rollupConfigType) {
+    return typescipts({
+        sourceMap: false,
+        tsconfig: path.join(c.root, 'tsconfig.json'),
+        declaration: false
+    })
+}
+function createBabelPlugin(c: rollupConfigType) {
+    const options: RollupBabelInputPluginOptions = {
+        extensions: [...DEFAULT_EXTENSIONS, '.ts'],
+        babelHelpers: 'bundled',
+        exclude: /node_modules/
+    }
+    if (c.projectType === 'react') {
+        options.extensions.push(...['tsx', 'jsx'])
+    }
+    return babel(options)
+}
+const DEFAULT_PLUGINS: Record<
+    rollupConfigType['projectType'],
+    (c: rollupConfigType) => rollupConfigType['plugin']['plugins']
+> = {
+    ts: c => [createBabelPlugin(c), createTsPlugin(c)],
+    react: c => [
+        url({
+            limit: 10000 // 10kB
+        }),
+        svgr({
+            svgo: false,
+            titleProp: true,
+            ref: true
+        }),
+        createBabelPlugin(c),
+        createTsPlugin(c)
+    ]
 }
 
 function genInput(c: rollupConfigType) {
@@ -78,9 +120,7 @@ async function rollupTask(config?: rollupConfigType): Promise<any> {
             : [
                   nodeResolve(),
                   commonjs(),
-                  url({
-                      limit: 10000 // 10kB
-                  }),
+                  ...DEFAULT_PLUGINS[c.projectType](c),
                   ...c.plugin.plugins
               ],
         ...c.inputOptions
@@ -92,22 +132,6 @@ async function rollupTask(config?: rollupConfigType): Promise<any> {
     await bundle.close()
 }
 
-rollupTask.REACT_CONFIG = {
-    plugin: {
-        plugins: [
-            svgr({
-                svgo: false,
-                titleProp: true,
-                ref: true
-            }),
-            babel({
-                extensions: [...DEFAULT_EXTENSIONS, '.ts', 'tsx'],
-                babelHelpers: 'bundled',
-                exclude: /node_modules/
-            })
-        ],
-        overwrite: false
-    }
-} as rollupConfigType
+rollupTask.DEFAULT_PLUGINS = DEFAULT_PLUGINS
 
 export default rollupTask

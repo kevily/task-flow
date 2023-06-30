@@ -13,21 +13,17 @@ task.registry('copy', copy, {
 task.registry('eslint', eslint)
 task.registry('stylelint', stylelint)
 task.registry('clear', clear, {
-    paths: ['./dist'],
-    /**
-     * @default process.cwd()
-     */
-    root: __dirname,
+    paths: ['dist'],
 })
 task.registry('rollup', rollup, {
-    ...rollup.REACT_CONFIG,
+    projectType: 'react',
     outputDir: 'dist',
     input: '**/*.{ts,tsx}',
 })
 
 task.run({
     sync: true,
-    queue: ['dts', 'rollup'],
+    queue: ['clear', 'rollup'],
     tip: 'build: default...\n',
 })
 
