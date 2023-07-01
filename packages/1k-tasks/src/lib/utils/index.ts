@@ -15,9 +15,9 @@ export function mergePath(root: string, p: string): string {
     return path.join(root, p || '')
 }
 
-export function resolvePackage(pkg) {
+export function resolvePackage(pkg: string, paths?: string[]) {
     try {
-        return require.resolve(pkg)
+        return require.resolve(pkg, { paths } )
     } catch {
         return false
     }

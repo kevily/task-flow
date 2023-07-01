@@ -1,7 +1,7 @@
 {
     "name": "__test__",
     "private": true,
-    "version": "2.5.0",
+    "version": "2.5.1",
     "main": "./pkg/index.js",
     "author": "kevily",
     "license": "MIT",
@@ -12,10 +12,10 @@
         "1k-tasks": "workspace:*"
     },
     "devDependencies": {
-        "@types/node": "16.3.3",
+        "@types/node": "20.3.3",
         "gulp": "^4.0.2",
         "react": "^18.2.0",
         "ts-node": "^10.9.1",
-        "typescript": "4.8.4"
+        "typescript": "5.1.3"
     }
 }
