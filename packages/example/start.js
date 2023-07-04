@@ -24,13 +24,12 @@ task.registry('rollup', rollup, {
     input: '**/*.{ts,tsx}',
 })
 
-// task.run({
-//     sync: true,
-//     queue: ['clear', 'css', 'scss', 'less', 'postcss', 'tsc', 'rollup'],
-//     tip: 'build: default...\n',
-// })
+task.run({
+    sync: true,
+    queue: ['clear', 'css', 'scss', 'less', 'postcss', 'tsc', 'rollup'],
+    tip: 'build: default...\n',
+})
 
-tsc({ root })
 
 // style({ root, parse: 'postcss', ignore: ['**/ignore/**.*'] })
 // rollup({

@@ -64,7 +64,9 @@ function createBabelPlugin(c: rollupConfigType) {
     }
     if (c.projectType === 'react') {
         options.extensions = extensions.react
-        options.presets.push(require.resolve('@babel/preset-react'))
+        options.presets.push([require.resolve('@babel/preset-react'), {
+            runtime: 'automatic'
+        }])
     }
     return babel(options)
 }

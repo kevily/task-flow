@@ -1,6 +1,6 @@
 {
     "name": "1k-tasks",
-    "version": "3.5.1",
+    "version": "3.5.2",
     "main": "./cjs/index.js",
     "module": "./es/index.js",
     "types": "./es/index.d.ts",
