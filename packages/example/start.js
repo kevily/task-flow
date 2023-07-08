@@ -24,17 +24,17 @@ task.registry('rollup', rollup, {
     input: '**/*.{ts,tsx}',
 })
 
-task.run({
-    sync: true,
-    queue: ['clear', 'css', 'scss', 'less', 'postcss', 'tsc', 'rollup'],
-    tip: 'build: default...\n',
-})
+// task.run({
+//     sync: true,
+//     queue: ['clear', 'css', 'scss', 'less', 'postcss', 'tsc', 'rollup'],
+//     tip: 'build: default...\n',
+// })
 
 
 // style({ root, parse: 'postcss', ignore: ['**/ignore/**.*'] })
-// rollup({
-//     ...rollup.REACT_CONFIG,
-//     root: path.join(process.cwd(), 'pkg'),
-//     outputDir: 'dist',
-//     input: '**/*.{ts,tsx}',
-// })
+rollup({
+    projectType: 'react',
+    root,
+    outputDir: 'dist',
+    input: '**/*.{ts,tsx}',
+})

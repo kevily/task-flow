@@ -64,9 +64,12 @@ function createBabelPlugin(c: rollupConfigType) {
     }
     if (c.projectType === 'react') {
         options.extensions = extensions.react
-        options.presets.push([require.resolve('@babel/preset-react'), {
-            runtime: 'automatic'
-        }])
+        options.presets.push([
+            require.resolve('@babel/preset-react'),
+            {
+                runtime: 'automatic'
+            }
+        ])
     }
     return babel(options)
 }
@@ -101,7 +104,7 @@ function genInput(c: rollupConfigType) {
             return newInput
         }
         input = map(isString(input) ? [input] : (input as string[]), input => {
-            return mergePath(relativePath(c.workDir), input)
+            return mergePath(relativePath(c.workDir), input).replaceAll(path.sep, path.posix.sep)
         })
         return globSync(input, { ignore: c.ignore })
     }
