@@ -17,7 +17,7 @@ export function mergePath(root: string, p: string): string {
 
 export function resolvePackage(pkg: string, paths?: string[]) {
     try {
-        return require.resolve(pkg, { paths } )
+        return require.resolve(pkg, { paths })
     } catch {
         return false
     }

@@ -1,7 +1,7 @@
 {
     "name": "__test__",
     "private": true,
-    "version": "2.5.3",
+    "version": "2.6.0",
     "main": "./pkg/index.js",
     "author": "kevily",
     "license": "MIT",

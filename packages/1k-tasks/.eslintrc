@@ -1,6 +1,17 @@
 {
+    "root": true,
     "parser": "@typescript-eslint/parser",
-    "extends": ["plugin:@typescript-eslint/recommended"],
+    "plugins": ["prettier"],
+    "extends": [
+        "eslint:recommended",
+        "plugin:@typescript-eslint/recommended"
+    ],
+    "env": {
+        "browser": true,
+        "node": true,
+        "es6": true,
+        "jest": true
+    },
     "parserOptions": {
         "ecmaVersion": 2018,
         "sourceType": "module",
@@ -12,19 +23,26 @@
     "rules": {
         "@typescript-eslint/no-var-requires": 0,
         "@typescript-eslint/explicit-function-return-type": "off",
-        "@typescript-eslint/no-explicit-any": 1,
-        "@typescript-eslint/no-empty-interface": 0,
+        "@typescript-eslint/no-explicit-any": 0,
+        "@typescript-eslint/no-non-null-assertion": "off",
         "@typescript-eslint/no-inferrable-types": [
             "warn",
             {
                 "ignoreParameters": true
             }
         ],
-        "@typescript-eslint/no-unused-vars": "warn",
+        "@typescript-eslint/no-unused-vars": ["warn", { "argsIgnorePattern": "^_" }],
         "@typescript-eslint/member-delimiter-style": 0,
         "@typescript-eslint/class-name-casing": 0,
-        "@typescript-eslint/ban-ts-comment": 0,
-        "semi": ["error", "never"],
-        "quotes": ["error", "single"]
+        "@typescript-eslint/explicit-module-boundary-types": "off",
+        "@typescript-eslint/ban-ts-comment": "off",
+        "@typescript-eslint/no-empty-interface": "off",
+        "prettier/prettier": [
+            "error",
+            {
+                "endOfLine": "auto"
+            }
+        ],
+        "no-constant-condition": "off"
     }
 }

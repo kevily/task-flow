@@ -30,6 +30,7 @@ export interface rollupConfigType extends EngineConfigType {
     }
     inputOptions?: Omit<RollupOptions, 'input'>
     outputOptions?: Omit<OutputOptions, 'plugins' | 'dir'>
+    babel?: Pick<RollupBabelInputPluginOptions, 'targets' | 'exclude'>
 }
 const extensions: Record<rollupConfigType['projectType'], string[]> = {
     ts: ['.json', '.js', '.ts'],
@@ -49,6 +50,11 @@ function createDefaultConfig(): rollupConfigType {
         },
         inputOptions: {
             external: [/\.(scss|less|css)$/, /node_modules/]
+        },
+        babel: {
+            targets: {
+                chrome: '70'
+            }
         },
         outputOptions: {
             format: 'esm'
@@ -71,7 +77,7 @@ function createBabelPlugin(c: rollupConfigType) {
             }
         ])
     }
-    return babel(options)
+    return babel({ ...options, ...c.babel })
 }
 const DEFAULT_PLUGINS: Record<
     rollupConfigType['projectType'],

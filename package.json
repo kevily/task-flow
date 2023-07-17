@@ -27,5 +27,8 @@
         "commitizen": "4.2.4",
         "cz-adapter-eslint": "0.3.0",
         "rimraf": "3.0.2"
+    },
+    "devDependencies": {
+        "prettier": "2.3.2"
     }
 }
