@@ -30,7 +30,7 @@ export interface rollupConfigType extends EngineConfigType {
     }
     inputOptions?: Omit<RollupOptions, 'input'>
     outputOptions?: Omit<OutputOptions, 'plugins' | 'dir'>
-    babel?: Pick<RollupBabelInputPluginOptions, 'targets' | 'exclude'>
+    babel?: Pick<RollupBabelInputPluginOptions, 'targets' | 'exclude' | 'plugins'>
 }
 const extensions: Record<rollupConfigType['projectType'], string[]> = {
     ts: ['.json', '.js', '.ts'],
@@ -63,10 +63,15 @@ function createDefaultConfig(): rollupConfigType {
 }
 function createBabelPlugin(c: rollupConfigType) {
     const options: RollupBabelInputPluginOptions = {
+        targets: c.babel?.targets,
         extensions: extensions.ts,
         babelHelpers: 'bundled',
-        exclude: /node_modules/,
-        presets: [require.resolve('@babel/preset-env'), require.resolve('@babel/preset-typescript')]
+        exclude: c.babel?.exclude || /node_modules/,
+        presets: [
+            require.resolve('@babel/preset-env'),
+            require.resolve('@babel/preset-typescript')
+        ],
+        plugins: c.babel?.plugins
     }
     if (c.projectType === 'react') {
         options.extensions = extensions.react
@@ -77,7 +82,7 @@ function createBabelPlugin(c: rollupConfigType) {
             }
         ])
     }
-    return babel({ ...options, ...c.babel })
+    return babel(options)
 }
 const DEFAULT_PLUGINS: Record<
     rollupConfigType['projectType'],
