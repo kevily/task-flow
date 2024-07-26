@@ -1,6 +1,23 @@
-import cp from 'child_process'
+import cp, { SpawnOptions } from 'child_process'
 import * as path from 'path'
 import * as fs from 'fs'
+
+export function spawnSync(
+    command: string,
+    args?: ReadonlyArray<string>,
+    options?: SpawnOptions
+): void {
+    const { status, error } = cp.spawnSync(command, args, {
+        stdio: 'inherit',
+        cwd: process.cwd(),
+        shell: true,
+        ...options,
+        encoding: 'utf-8'
+    })
+    if ((status && status !== 0) || error) {
+        process.exit(1)
+    }
+}
 
 export function onGenCommand(): 'yarn' | 'npm' {
     try {

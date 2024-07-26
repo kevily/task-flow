@@ -1,8 +1,8 @@
 import { assign, isString, omit } from 'lodash'
-import rimraf, { Options } from 'rimraf'
-import { mergePath } from '../utils'
+import rimraf, { RimrafSyncOptions } from 'rimraf'
+import { mergePath } from './tools'
 
-export interface clearConfigType extends Options {
+export interface clearConfigType extends RimrafSyncOptions {
     paths: string[]
     /**
      * @description Since the glob.cwd does not work. so, add root is used instead.
