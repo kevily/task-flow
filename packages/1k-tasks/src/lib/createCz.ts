@@ -1,12 +1,12 @@
 import * as fsExtra from 'fs-extra'
-import { onGenCommand, resolvePackage } from '../utils'
-import { EngineConfigType } from '../types'
-import { spawnSync } from '../utils/spawnSync'
+import { spawnSync, onGenCommand, resolvePackage } from './tools'
 import { assign, size } from 'lodash'
 import * as path from 'path'
 
-export interface createCzConfig extends EngineConfigType {}
-export default async function (config?: createCzConfig): Promise<any> {
+export interface createCzConfig {
+    root: string
+}
+export default async function (config?: Partial<createCzConfig>): Promise<any> {
     const rootPath = config.root || process.cwd()
     const installPkgs = []
     if (!resolvePackage('commitizen')) {

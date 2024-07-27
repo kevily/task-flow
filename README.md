@@ -36,7 +36,7 @@ task.run(<config>)
 Options:
   --createCz  crate cz config
   --ts        Use tsc to build(js,ts)
-  --babel     Use babel to build(js,ts)
-  --css       Build css,scss,pcss,less
+  --eslint    Use eslint
+  --stylelint    Use stylelint
   -h, --help  display help for command
 ```

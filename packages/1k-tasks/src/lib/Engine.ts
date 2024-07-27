@@ -1,67 +1,67 @@
-import * as gulp from 'gulp'
-import { isArray, assign, filter, isBoolean, keys, values, pick, has, size, forEach } from 'lodash'
+import { isArray, filter, isBoolean, keys, values, pick, has, size } from 'lodash'
 import ora from 'ora'
 import chalk from 'chalk'
-import { GULP_TASK_DEFAULT_CONFIG } from './configs'
-import { EngineConfigType, taskType, runConfigType } from './types'
+
+export type taskType<C> = (c: C) => Promise<any> | any
+export interface TaskConfigType<T, C> {
+    name: string
+    task: T
+    config?: C
+}
+export interface runConfigType {
+    sync?: boolean
+    queue?: string[]
+    /**
+     * @description If set to false, it is not displayed
+     */
+    tip?: string | boolean
+    callback?: () => Promise<any>
+}
 
 export default class Task {
-    protected config: EngineConfigType
     protected tasks: { [key: string]: () => Promise<any> | any }
-    constructor(config?: EngineConfigType) {
-        this.config = assign(GULP_TASK_DEFAULT_CONFIG, config)
+    constructor() {
         this.tasks = {}
 
         this.getTaskNames = this.getTaskNames.bind(this)
         this.run = this.run.bind(this)
-    }
-    public addInputIgnore(igore: EngineConfigType['ignore']): void {
-        forEach(igore, str => {
-            this.config.ignore.push(str)
-        })
-    }
-    public setConfig(c?: EngineConfigType) {
-        assign(this.config, c)
     }
     public registry<T extends taskType<Parameters<T>[0]>, C extends Parameters<T>[0]>(
         name: string,
         task: T,
         config?: C
     ): void {
-        this.tasks[name] = () => task(assign({}, this.config, config))
+        this.tasks[name] = () => task(config)
     }
     public getTaskNames() {
         return keys(this.tasks)
     }
-    public run(c?: runConfigType): Promise<boolean> {
-        return new Promise<boolean>((resolve, reject) => {
-            let running = ora()
-            try {
-                if (!isBoolean(c?.tip)) {
-                    running = running.start(chalk.yellow(`${c?.tip || 'Task running...'}\n`))
-                }
-                const taskNames = isArray(c?.queue)
-                    ? filter(c?.queue, name => has(this.tasks, name))
-                    : this.getTaskNames()
-                if (size(taskNames) > 0) {
-                    const callback = () => {
-                        c?.callback?.()
-                        running.succeed()
-                        resolve(true)
-                    }
-                    const tasks = values(pick(this.tasks, taskNames))
-                    if (c?.sync) {
-                        // @ts-ignore
-                        gulp.series(...tasks, callback)(gulp)
-                    } else {
-                        // @ts-ignore
-                        gulp.series(gulp.parallel(...tasks), callback)(gulp)
-                    }
-                }
-            } catch (e) {
-                running.fail(e.message)
-                reject(e.message)
+    public async run(c?: runConfigType): Promise<boolean> {
+        let running = ora()
+        try {
+            if (!isBoolean(c?.tip)) {
+                running = running.start(chalk.yellow(`${c?.tip || 'Task running...'}\n`))
             }
-        })
+            const taskNames = isArray(c?.queue)
+                ? filter(c?.queue, name => has(this.tasks, name))
+                : this.getTaskNames()
+            if (size(taskNames) > 0) {
+                const tasks = values(pick(this.tasks, taskNames))
+                if (c?.sync) {
+                    for (const task of tasks) {
+                        await task()
+                    }
+                } else {
+                    await Promise.all(tasks.map(task => task()))
+                }
+                c?.callback?.()
+                running.succeed()
+            }
+            return true
+        } catch (e) {
+            console.error(e)
+            running.fail(e.message)
+            return false
+        }
     }
 }

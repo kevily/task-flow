@@ -1,12 +1,12 @@
 {
     "name": "__test__",
     "private": true,
-    "version": "2.6.1",
+    "version": "3.0.0",
     "main": "./pkg/index.js",
     "author": "kevily",
     "license": "MIT",
     "scripts": {
-        "start": "node ./start.js"
+        "start": "ts-node ./start.ts"
     },
     "dependencies": {
         "1k-tasks": "workspace:*"
@@ -14,8 +14,8 @@
     "devDependencies": {
         "@types/node": "20.3.3",
         "gulp": "^4.0.2",
-        "react": "^18.2.0",
-        "ts-node": "^10.9.1",
+        "react": "18.2.0",
+        "ts-node": "10.9.1",
         "typescript": "5.1.3"
     }
 }

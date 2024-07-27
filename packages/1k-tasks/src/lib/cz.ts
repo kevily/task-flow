@@ -1,10 +1,8 @@
-import { resolvePackage } from '../utils'
-import { spawnSync } from '../utils/spawnSync'
+import { resolvePackage, spawnSync } from './tools'
 import inquirer from 'inquirer'
 import createCz, { createCzConfig } from './createCz'
 
-export interface czConfigType extends createCzConfig {}
-export default async function cz(c: czConfigType) {
+export default async function cz(c?: Partial<createCzConfig>) {
     let isRun = true
     if (!resolvePackage('commitizen') || !resolvePackage('cz-adapter-eslint')) {
         const { isInstall } = await inquirer.prompt([
