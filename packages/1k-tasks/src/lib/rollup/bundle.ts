@@ -19,7 +19,7 @@ export async function build(config: bundleConfigType) {
             c.delPlugin && del({ targets: [c.outputDir], ...c.delPlugin }),
             c.nodeResolve && nodeResolve({ extensions, ...c.nodeResolve }),
             c.commonjs && commonjs(c.commonjs),
-            c.urlPlugin && url({ limit: 10 * 1000 }),
+            c.urlPlugin && url({ limit: 10 * 1000, ...c.urlPlugin }),
             c.babel && createBabelPlugin(c.babel),
             ...c.inputOptions.plugins
         ]

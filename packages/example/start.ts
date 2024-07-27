@@ -25,7 +25,4 @@ task.registry('copy', copy, {
     dest
 })
 
-task.run({
-    sync: true,
-    queue: ['rollup', 'copy']
-})
+task.run({ sync: true })
