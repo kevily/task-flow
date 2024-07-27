@@ -1,24 +1,20 @@
 import babel, { RollupBabelInputPluginOptions } from '@rollup/plugin-babel'
-import { rollupConfigType } from './rollup.type'
+import { babelOptionsType } from './rollup.type'
 import { extensions } from './rollup.constnat'
-
-export function createBabelPlugin(c: rollupConfigType) {
-    const options: RollupBabelInputPluginOptions = {
-        targets: c.babel?.targets,
-        extensions,
+export function createBabelPlugin(options: babelOptionsType) {
+    const babelOptions: RollupBabelInputPluginOptions = {
+        targets: options?.targets,
+        include: options.include,
+        extensions: options.extensions || extensions,
         babelHelpers: 'bundled',
-        exclude: c.babel?.exclude || /node_modules/,
+        exclude: options?.exclude || /node_modules/,
         presets: [
             require.resolve('@babel/preset-env'),
-            require.resolve('@babel/preset-typescript'),
-            [
-                require.resolve('@babel/preset-react'),
-                {
-                    runtime: 'automatic'
-                }
-            ]
+            require.resolve('@babel/preset-typescript')
         ],
-        plugins: c.babel?.plugins
+        plugins: []
     }
-    return babel(options)
+    babelOptions.presets = babelOptions.presets.concat(options?.presets || [])
+    babelOptions.plugins = babelOptions.plugins.concat(options?.plugins || [])
+    return babel(babelOptions)
 }

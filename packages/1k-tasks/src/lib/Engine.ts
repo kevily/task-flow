@@ -59,6 +59,7 @@ export default class Task {
             }
             return true
         } catch (e) {
+            console.error(e)
             running.fail(e.message)
             return false
         }

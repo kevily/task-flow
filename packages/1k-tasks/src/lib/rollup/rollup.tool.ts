@@ -2,9 +2,9 @@ import { globSync } from 'glob'
 import { forEach, isArray, isObject, isString, map } from 'lodash'
 import { mergePath } from '../tools'
 import * as path from 'path'
-import { rollupConfigType } from './rollup.type'
+import { bundleConfigType } from './rollup.type'
 
-export function createDefaultConfig(): rollupConfigType {
+export function createDefaultConfig() {
     return {
         root: process.cwd(),
         workDir: 'src',
@@ -14,19 +14,20 @@ export function createDefaultConfig(): rollupConfigType {
             external: [/\.(scss|less|css)$/, /node_modules/]
         },
         babel: {
-            targets: {
-                chrome: '70'
-            },
-            plugins: []
+            targets: { chrome: '87' }
         },
         outputOptions: {
             format: 'esm'
-        }
-    }
+        },
+        nodeResolve: {},
+        commonjs: {},
+        urlPlugin: {},
+        delPlugin: {}
+    } satisfies bundleConfigType
 }
 
-export function genInput(c: rollupConfigType) {
-    function relativePath(workDir: rollupConfigType['workDir']) {
+export function genInput(c: bundleConfigType) {
+    function relativePath(workDir: bundleConfigType['workDir']) {
         return path.relative(process.cwd(), path.join(c.root, workDir))
     }
     let input = c.input

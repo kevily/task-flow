@@ -10,7 +10,7 @@ const task = new Engine()
 task.registry('tsc', tsc, { root })
 task.registry('eslint', eslint, { root })
 task.registry('stylelint', stylelint, { root })
-task.registry('rollup', rollup, {
+task.registry('rollup', rollup.buildReact, {
     root,
     workDir,
     outputDir: dest,
@@ -20,20 +20,12 @@ task.registry('rollup', rollup, {
 task.registry('copy', copy, {
     cwd: root,
     src: ['**/copy/.prettierrc.js', '**/copy/.czrc', '**/copy/**/*.*', '**/**.scss'].map(p => {
-        return path.join(workDir, p)
+        return `${workDir}/${p}`
     }),
     dest
 })
 
-// task.run({
-//     sync: true,
-//     queue: ['copy']
-// })
-
-copy({
-    cwd: root,
-    src: ['*/**.scss'].map(p => {
-        return path.join(workDir, p)
-    }),
-    dest
+task.run({
+    sync: true,
+    queue: ['rollup', 'copy']
 })
