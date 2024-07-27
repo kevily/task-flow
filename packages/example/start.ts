@@ -1,4 +1,4 @@
-import { Engine, copy, rollup, eslint, stylelint, tsc } from '1k-tasks'
+import { Engine, copy, rollup, eslint, stylelint, tsc, clear } from '1k-tasks'
 import path from 'path'
 
 const root = path.join(process.cwd(), 'pkg')
@@ -7,6 +7,7 @@ const dest = 'dist'
 const workDir = 'src'
 
 const task = new Engine()
+task.registry('clear', clear, { root, paths: [dest] })
 task.registry('tsc', tsc, { root })
 task.registry('eslint', eslint, { root })
 task.registry('stylelint', stylelint, { root })

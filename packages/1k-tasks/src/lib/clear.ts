@@ -1,5 +1,5 @@
 import { assign, isString, omit } from 'lodash'
-import rimraf, { RimrafSyncOptions } from 'rimraf'
+import { RimrafSyncOptions, rimrafSync } from 'rimraf'
 import { mergePath } from './tools'
 
 export interface clearConfigType extends RimrafSyncOptions {
@@ -13,11 +13,11 @@ export interface clearConfigType extends RimrafSyncOptions {
 /**
  * @param {Object} config Inherited from rimrafOptions
  */
-export default async function (config?: clearConfigType): Promise<any> {
+export default function (config?: clearConfigType) {
     const c = assign<clearConfigType, clearConfigType>({ paths: [], root: process.cwd() }, config)
     for (const p of c.paths) {
         if (isString(c?.root) && isString(p)) {
-            rimraf.sync(mergePath(c?.root, p), omit(c, ['paths', 'root']))
+            rimrafSync(mergePath(c?.root, p), omit(c, ['paths', 'root']))
         }
     }
 }

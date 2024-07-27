@@ -55,12 +55,16 @@ export default class Task {
                     await Promise.all(tasks.map(task => task()))
                 }
                 c?.callback?.()
+            }
+            if (running.isSpinning) {
                 running.succeed()
             }
             return true
         } catch (e) {
             console.error(e)
-            running.fail(e.message)
+            if (running.isSpinning) {
+                running.fail(e.message)
+            }
             return false
         }
     }
