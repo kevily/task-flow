@@ -1,20 +1,18 @@
 #!/usr/bin/env node
 
-import { createCz, cz, eslint, stylelint } from '../cjs'
+import { createCz, cz, eslint, stylelint, Engine } from '../cjs'
 import commander = require('commander')
-import ora = require('ora')
-import chalk = require('chalk')
 
 let program = commander.program.version(
     require('../package.json').version,
     '-v, --version',
     'output the current version'
 )
-const taskList: Record<string, () => Promise<void>> = {}
+const task = new Engine()
 
 async function registry(name: string, description: string, task: any) {
     program = program.option(`--${name}`, description)
-    taskList[name] = task
+    task.registry(name, task)
 }
 
 registry('createCz', 'crate cz config', createCz)
@@ -24,13 +22,7 @@ registry('cz', 'Use cz', cz)
 
 program.parse(process.argv)
 
-async function run() {
-    const tasks = Object.keys(program.opts())
-    const running = ora(chalk.yellow('Task running...')).start()
-    for (const taskName of tasks) {
-        await taskList[taskName]()
-    }
-    running.succeed()
-}
-
-run()
+task.run({
+    tip: 'Task running...',
+    queue: Object.keys(program.opts())
+})
