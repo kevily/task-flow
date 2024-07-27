@@ -13,9 +13,7 @@ export function createDefaultConfig() {
         inputOptions: {
             external: [/\.(scss|less|css)$/, /node_modules/]
         },
-        babel: {
-            targets: { chrome: '87' }
-        },
+        babel: {},
         outputOptions: {
             format: 'esm'
         },

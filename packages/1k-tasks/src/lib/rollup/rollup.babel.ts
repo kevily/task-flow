@@ -3,7 +3,7 @@ import { babelOptionsType } from './rollup.type'
 import { extensions } from './rollup.constnat'
 export function createBabelPlugin(options: babelOptionsType) {
     const babelOptions: RollupBabelInputPluginOptions = {
-        targets: options?.targets,
+        targets: options?.targets || { chrome: '87' },
         include: options.include,
         extensions: options.extensions || extensions,
         babelHelpers: 'bundled',
