@@ -21,7 +21,7 @@ export async function build(config: bundleConfigType) {
             c.commonjs && commonjs(c.commonjs),
             c.urlPlugin && url({ limit: 10 * 1000, ...c.urlPlugin }),
             c.babel && createBabelPlugin(c.babel),
-            ...c.inputOptions.plugins
+            ...(c.inputOptions.plugins || [])
         ]
     } satisfies RollupOptions
     const bundle = await rollup(options)
