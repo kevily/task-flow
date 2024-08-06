@@ -6,7 +6,7 @@ import url from '@rollup/plugin-url'
 import svgr from '@svgr/rollup'
 import { mergePath } from '../tools'
 import { bundleConfigType, reactBundleConfigType } from './rollup.type'
-import { extensions, reactExtensions } from './rollup.constnat'
+import { extensions, reactExtensions } from './rollup.constant'
 import { createDefaultConfig, genInput } from './rollup.tool'
 import { createBabelPlugin } from './rollup.babel'
 
