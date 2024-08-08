@@ -7,8 +7,7 @@ const dest = 'dist'
 const workDir = 'src'
 
 const task = new Engine()
-task.registry('clear', clear, { root, paths: [dest] })
-task.registry('tsc', tsc, { root })
+// task.registry('clear', clear, { root, paths: [dest] })
 task.registry('eslint', eslint, { root })
 task.registry('stylelint', stylelint, { root })
 task.registry('rollup', rollup.build, {
@@ -16,7 +15,10 @@ task.registry('rollup', rollup.build, {
     workDir,
     outputDir: dest,
     input: '**/*.ts',
-    ignore: [...ignore, '**/react/**/*.*']
+    ignore: [...ignore, '**/react/**/*.*'],
+    delPlugin: {
+        targets: [dest]
+    }
 })
 task.registry('rollup:react', rollup.buildReact, {
     root,
@@ -25,7 +27,7 @@ task.registry('rollup:react', rollup.buildReact, {
     input: '**/*.{ts,tsx}',
     ignore
 })
-
+task.registry('tsc', tsc, { root })
 task.registry('copy', copy, {
     cwd: root,
     src: ['**/copy/.prettierrc.js', '**/copy/.czrc', '**/copy/**/*.*', '**/**.scss'].map(p => {

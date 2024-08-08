@@ -1,14 +1,13 @@
 import { rollup, RollupOptions } from 'rollup'
 import { nodeResolve } from '@rollup/plugin-node-resolve'
 import commonjs from '@rollup/plugin-commonjs'
-import del from 'rollup-plugin-delete'
 import url from '@rollup/plugin-url'
 import svgr from '@svgr/rollup'
 import { mergePath } from '../tools'
 import { bundleConfigType, reactBundleConfigType } from './rollup.type'
 import { extensions, reactExtensions } from './rollup.constant'
 import { createDefaultConfig, genInput } from './rollup.tool'
-import { createBabelPlugin } from './rollup.babel'
+import { babelPlugin, delPlugin } from './rollup.plugin'
 
 export async function build(config: bundleConfigType) {
     const c: bundleConfigType = { ...createDefaultConfig(), ...config }
@@ -16,11 +15,11 @@ export async function build(config: bundleConfigType) {
         input: genInput(c),
         ...c.inputOptions,
         plugins: [
-            c.delPlugin && del({ targets: [c.outputDir], ...c.delPlugin }),
+            c.delPlugin && delPlugin(c.delPlugin, c),
             c.nodeResolve && nodeResolve({ extensions, ...c.nodeResolve }),
             c.commonjs && commonjs(c.commonjs),
             c.urlPlugin && url({ limit: 10 * 1000, ...c.urlPlugin }),
-            c.babel && createBabelPlugin(c.babel),
+            c.babel && babelPlugin(c.babel),
             ...(c.inputOptions.plugins || [])
         ]
     } satisfies RollupOptions

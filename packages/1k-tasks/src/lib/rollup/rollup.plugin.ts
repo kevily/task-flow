@@ -1,7 +1,10 @@
+import path from 'path'
 import babel, { RollupBabelInputPluginOptions } from '@rollup/plugin-babel'
-import { babelOptionsType } from './rollup.type'
+import del from 'rollup-plugin-delete'
+import { babelOptionsType, bundleConfigType, delPluginOptionsType } from './rollup.type'
 import { extensions } from './rollup.constant'
-export function createBabelPlugin(options: babelOptionsType) {
+
+export function babelPlugin(options: babelOptionsType) {
     const babelOptions: RollupBabelInputPluginOptions = {
         targets: options?.targets || { chrome: '87' },
         include: options.include,
@@ -17,4 +20,16 @@ export function createBabelPlugin(options: babelOptionsType) {
     babelOptions.presets = babelOptions.presets.concat(options?.presets || [])
     babelOptions.plugins = babelOptions.plugins.concat(options?.plugins || [])
     return babel(babelOptions)
+}
+
+export function delPlugin(
+    options: delPluginOptionsType,
+    bundleConfig: Pick<bundleConfigType, 'root' | 'outputDir'>
+) {
+    return del({
+        ...options,
+        targets: (options.targets || [`${bundleConfig.outputDir}/*`]).map(p => {
+            return path.resolve(bundleConfig.root, p)
+        })
+    })
 }

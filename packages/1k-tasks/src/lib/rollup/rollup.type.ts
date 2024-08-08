@@ -11,6 +11,10 @@ export type babelOptionsType = Pick<
     'targets' | 'exclude' | 'plugins' | 'presets' | 'extensions' | 'include'
 >
 
+export interface delPluginOptionsType extends Omit<delPluginOptions, 'targets'> {
+    targets?: ReadonlyArray<string>
+}
+
 export interface bundleConfigType {
     root: string
     workDir: string
@@ -34,8 +38,12 @@ export interface bundleConfigType {
     babel?: false | Partial<babelOptionsType>
     /** @default true */
     urlPlugin?: false | Partial<urlPluginOptions>
-    /** @default true */
-    delPlugin?: false | Partial<delPluginOptions>
+    /**
+     * @default true
+     * @description Please place other operations after the "rollup" compilation.
+     * @description The path configured under "targets" will treat the path configured under "root" as the root path, and will be merged using "path.resolve".
+     */
+    delPlugin?: false | Partial<delPluginOptionsType>
 }
 
 export interface reactBundleConfigType extends Omit<bundleConfigType, 'babel'> {
