@@ -1,3 +1,7 @@
 div {
     color: #000;
+
+    span {
+        color: #000;
+    }
 }
