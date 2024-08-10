@@ -34,16 +34,17 @@ export async function build(config: bundleConfigType) {
 
 export async function buildReact(config?: reactBundleConfigType): Promise<void> {
     const c: reactBundleConfigType = { ...createDefaultConfig(), svgrPlugin: {}, ...config }
+    const plugins: reactBundleConfigType['inputOptions']['plugins'] = []
+    if (c.svgrPlugin !== false) {
+        plugins.push(
+            svgr({ svgo: false, titleProp: true, ref: true, icon: '1em', ...c.svgrPlugin })
+        )
+    }
+    plugins.push(...(c.inputOptions?.plugins || []))
 
     await build({
         ...c,
-        inputOptions: {
-            ...c.inputOptions,
-            plugins: [
-                c.svgrPlugin && svgr({ svgo: false, titleProp: true, ref: true, ...c.svgrPlugin }),
-                ...(c.inputOptions?.plugins || [])
-            ]
-        },
+        inputOptions: { ...c.inputOptions, plugins },
         nodeResolve: c.nodeResolve ? { extensions: reactExtensions, ...c.nodeResolve } : false,
         babel: {
             ...c.babel,
