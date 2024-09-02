@@ -36,9 +36,7 @@ export async function buildReact(config?: reactBundleConfigType): Promise<void> 
     const c: reactBundleConfigType = { ...createDefaultConfig(), svgrPlugin: {}, ...config }
     const plugins: reactBundleConfigType['inputOptions']['plugins'] = []
     if (c.svgrPlugin !== false) {
-        plugins.push(
-            svgr({ svgo: false, titleProp: true, ref: true, icon: '1em', ...c.svgrPlugin })
-        )
+        plugins.push(svgr({ svgo: false, titleProp: true, ref: true, ...c.svgrPlugin }))
     }
     plugins.push(...(c.inputOptions?.plugins || []))
 
